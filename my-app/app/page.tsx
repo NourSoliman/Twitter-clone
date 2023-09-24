@@ -7,6 +7,7 @@ import { RootState } from './Redux/MainStore/rootReducer'
 import { useSelector } from 'react-redux'
 import Login from './Components/LoginSystem/Login'
 import Register from './Components/LoginSystem/Register'
+import EditModal from './Components/Sidebar/EditModal'
 function page() {
   const {isLoginFormOpen} = useSelector((state :  RootState)=>state.dialog)
 

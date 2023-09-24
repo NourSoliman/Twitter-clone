@@ -1,171 +1,244 @@
-import { REGISTER_FIRST , REGISTER_SUCCESS , REGISTER_FAIL , LOGIN_FAIL , LOGIN_FIRST , LOGIN_SUCCESS,
-LOGOUT_FAIL , LOGOUT_FIRST , LOGOUT_SUCCESS,ALL_FAIL, ALL_FIRST ,ALL_SUCCESS
+import {
+    REGISTER_FIRST, REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_FIRST, LOGIN_SUCCESS,
+    LOGOUT_FAIL, LOGOUT_FIRST, LOGOUT_SUCCESS, ALL_FAIL, ALL_FIRST, ALL_SUCCESS, IMAGES_SUCCESS,
+    GET_USER_DATA_FAIL, GET_USER_DATA_FIRST, GET_USER_DATA_SUCCESS, CHANGE_BIO_FAIL, CHANGE_BIO_FIRST,
+    CHANGE_BIO_SUCCESS,
 } from "./Types";
+//FIRST TYPES///////////////////////////
+interface RegisterFirst {
+    type: typeof REGISTER_FIRST,
+    isLoading: boolean
+}
+interface LoginFirst {
+    type: typeof LOGIN_FIRST,
+    isLoading: boolean
+}
+interface AllFirst {
+    type: typeof ALL_FIRST,
+    isLoading: boolean,
+}
+interface LogoutFirst {
+    type: typeof LOGOUT_FIRST,
+    isLoading: boolean
+}
+interface GetUser {
+    type: typeof GET_USER_DATA_FIRST,
+    isLoading: boolean,
+}
+interface ChangeBio {
+    type: typeof CHANGE_BIO_FIRST
+    isLoading: boolean,
+}
+///////////SUCCESS TYpeS////////////////////////////////////
+interface LoginSuccess {
+    type: typeof LOGIN_SUCCESS,
+    payload: {
+        user: object,
+        message: string,
+    }
+    isLoggedIn: boolean,
+    isLoading: boolean
+}
+interface LogoutSuccess {
+    type: typeof LOGOUT_SUCCESS,
+    payload: {
+        message: string,
+    }
+    isLoading: boolean,
+    isLoggedIn: boolean,
 
-interface RegisterFirst{
-    type:typeof REGISTER_FIRST,
-    isLoading:boolean
 }
-interface LoginFirst{
-    type:typeof LOGIN_FIRST,
-    isLoading:boolean
-}
-interface AllFirst{
-    type:typeof ALL_FIRST,
-    isLoading:boolean,
-}
-interface LogoutFirst{
-    type:typeof LOGOUT_FIRST,
-    isLoading:boolean
-}
-interface LoginSuccess{
-    type:typeof LOGIN_SUCCESS,
-    payload:{
-        user:object,
-        message:string,
+interface RegisterSuccess {
+    type: typeof REGISTER_SUCCESS,
+    payload: {
+        user: object,
+        message: string
     }
-    isLoggedIn:boolean,
-    isLoading:boolean
+    isLoading: boolean
 }
-interface LogoutSuccess{
-    type:typeof LOGOUT_SUCCESS,
-    payload:{
-        message:string,
+export interface User {
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImage: string,
+    coverImage: string,
+    bio: string,
+    _id: string,
+}
+interface AllSuccess {
+    type: typeof ALL_SUCCESS,
+    payload: {
+        users: User[],
     }
-    isLoading:boolean,
-    isLoggedIn:boolean,
-
+    isLoading: boolean,
 }
-interface RegisterSuccess{
-    type:typeof REGISTER_SUCCESS,
-    payload:{
-        user:object,
-        message:string
+interface Image {
+    type: typeof IMAGES_SUCCESS,
+    payload: {
+        userImage: string,
     }
-    isLoading:boolean
 }
-interface User{
-    firstName:string,
-    lastName:string,
-    email:string
+interface GetUserSuccess {
+    type: typeof GET_USER_DATA_SUCCESS,
+    payload: User,
+    isLoading: boolean,
 }
-interface AllSuccess{
-    type:typeof ALL_SUCCESS,
-    payload:{
-        users:User[],
+interface ChangeProfileBioSuccess {
+    type: typeof CHANGE_BIO_SUCCESS,
+    payload: User,
+    isLoading: boolean,
+}
+///////////////////FAIL TYPEs////////////////////////////////////////
+interface RegisterFail {
+    type: typeof REGISTER_FAIL,
+    payload: {
+        error: string,
     }
-    isLoading:boolean,
+    isLoading: boolean
 }
-interface RegisterFail{
-    type:typeof REGISTER_FAIL,
-    payload:{
-        error:string,
+interface LoginFail {
+    type: typeof LOGIN_FAIL,
+    payload: {
+        error: string,
     }
-    isLoading:boolean
+    isLoading: boolean
 }
-interface LoginFail{
-    type:typeof LOGIN_FAIL,
-    payload:{
-        error:string,
-    }
-    isLoading:boolean
-}
-interface LogoutFail{
-    type:typeof LOGOUT_FAIL,
-    error:string,
-    isLoading:boolean,
-    isLoggedIn:boolean,
+interface LogoutFail {
+    type: typeof LOGOUT_FAIL,
+    error: string,
+    isLoading: boolean,
+    isLoggedIn: boolean,
 }
 interface AllFail {
-    type:typeof ALL_FAIL,
-    error:string,
-    isLoading:boolean,
+    type: typeof ALL_FAIL,
+    error: string,
+    isLoading: boolean,
+}
+interface GetUserFail {
+    type: typeof GET_USER_DATA_FAIL,
+    error: string,
+    isLoading: boolean,
 }
 
-type actionTypes = RegisterFirst | RegisterSuccess | RegisterFail | 
-LoginFail | LoginFirst | LoginSuccess|LogoutFail |
- LogoutFirst | LogoutSuccess | AllSuccess |AllFail | AllFirst 
-    interface intiState{
-        isLoading:boolean,
-        user:object,
-        message:string,
-        isLoggedIn:boolean,
-        error:string,
-        users:User[],
-    }
-    const initialState:intiState ={
-        isLoading:false,
-        users:[],
-        user:{},
-        message:"",
-        error:"",
-        isLoggedIn:false,
-    }
-const loginReducer = (state = initialState , action :actionTypes )=>{
-    switch(action.type){
+
+interface ChangeBioFail {
+    type: typeof CHANGE_BIO_FAIL,
+    error: string,
+    isLoading: boolean,
+}
+
+type actionTypes = RegisterFirst | RegisterSuccess | RegisterFail |
+    LoginFail | LoginFirst | LoginSuccess | LogoutFail |
+    LogoutFirst | LogoutSuccess | AllSuccess | AllFail | AllFirst | Image |
+    GetUserSuccess | GetUser | GetUserFail | ChangeBio | ChangeBioFail
+    | ChangeProfileBioSuccess
+
+
+interface intiState {
+    isLoading: boolean,
+    user: object,
+    message: string,
+    isLoggedIn: boolean,
+    error: string,
+    users: User[],
+}
+const initialState: intiState = {
+    isLoading: false,
+    users: [],
+    user: {} as User,
+    message: "",
+    error: "",
+    isLoggedIn: false,
+}
+const loginReducer = (state = initialState, action: actionTypes) => {
+    switch (action.type) {
         case REGISTER_FIRST:
         case LOGIN_FIRST:
         case LOGOUT_FIRST:
         case ALL_FIRST:
-            return{
+        case GET_USER_DATA_FIRST:
+        case CHANGE_BIO_FIRST:
+            return {
                 ...state,
-                isLoading:true,
+                isLoading: true,
             }
         case REGISTER_SUCCESS:
-            return{
-            ...state,
-            user:action.payload,
-            message:action.payload,
-            isLoading:false,
+            return {
+                ...state,
+                user: action.payload,
+                message: action.payload,
+                isLoading: false,
             }
         case LOGIN_SUCCESS:
-            const {user , message} = action.payload
-            return{
+            const { user, message } = action.payload
+            return {
                 ...state,
                 user,
                 message,
-                isLoading:false,
-                isLoggedIn:true,
+                isLoading: false,
+                isLoggedIn: true,
             }
         case LOGOUT_SUCCESS:
             return {
                 ...state,
-                message:action.payload,
-                isLoading:false,
-                isLoggedIn:false,
+                message: action.payload,
+                isLoading: false,
+                isLoggedIn: false,
             }
         case ALL_SUCCESS:
-            console.log("Updated users:", action.payload.users); // Log the users array
-
-            return{
+            return {
                 ...state,
-                users:[...state.users , ...action.payload.users],
-                isLoading:false,
+                users: action.payload.users,
+                isLoading: false,
+            }
+        case GET_USER_DATA_SUCCESS:
+            return {
+                ...state,
+                user: action.payload,
+                isLoading: false,
+            }
+        case CHANGE_BIO_SUCCESS:
+            return {
+                ...state,
+                user: action.payload,
+                isLoading: false,
             }
         case LOGIN_FAIL:
             // const {error} = action.payload
-            return{
+            return {
                 ...state,
-                error:`ERROR-LOGGING`,
-                isLoading:false,
+                error: `ERROR-LOGGING`,
+                isLoading: false,
             }
         case REGISTER_FAIL:
-            return{
+            return {
                 ...state,
-                error:`ERROR ROROROROROR`,
-                isLoading:false,
+                error: `ERROR ROROROROROR`,
+                isLoading: false,
             }
         case LOGOUT_FAIL:
-            return{
+            return {
                 ...state,
-                error:`Error loggingout`,
-                isLoading:false,
+                error: `Error loggingout`,
+                isLoading: false,
             }
         case ALL_FAIL:
-            return{
+            return {
                 ...state,
-                error:`error`,
-                isLoading:false,
+                error: `error`,
+                isLoading: false,
+            }
+        case GET_USER_DATA_FAIL:
+            return {
+                ...state,
+                error: `ERORORO`,
+                isLoading: false,
+            }
+        case CHANGE_BIO_FAIL:
+            return {
+                ...state,
+                error: `error`,
+                isLoading: false,
             }
         default:
             return state;

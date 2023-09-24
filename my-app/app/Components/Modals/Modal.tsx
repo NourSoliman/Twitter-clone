@@ -6,15 +6,16 @@ import Button from '../Buttons/Button'
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  onSubmit: (e:React.MouseEvent) => void;
+  onSubmit: () => void;
   title?: string;
   body?: React.ReactElement;
   footer?: React.ReactElement;
   actionLabel: string;
   disabled?: boolean;
 }
-
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, actionLabel, footer, disabled }) => {
+  console.log(isOpen , `from modal`)
+
   const handleClose = useCallback(() => {
     if (disabled) {
       return;
@@ -29,12 +30,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, a
     }
 
     onSubmit();
+
   }, [onSubmit, disabled]);
 
   if (!isOpen) {
     return null;
   }
-
   return (
     <>
       <div

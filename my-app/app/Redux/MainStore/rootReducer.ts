@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import dialogReducer from '../dialog/Reducer';
 import storeReducer from '../Store/reducer';
-import loginReducer from '../Login/reducer';
+import loginReducer from '../Login/Reducer';
 export interface RootState{
     dialog:ReturnType<typeof dialogReducer>;
     store:ReturnType<typeof storeReducer>;

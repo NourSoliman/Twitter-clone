@@ -31,12 +31,12 @@ const Register = () => {
         confirmPassword,
         lastName,
         };
-        // Dispatch the action
         dispatch(registerAction(userData) as any);
         //reset form after success register
         setFirstName(``)
         setLastName(``)
         setEmail(``)
+        setPassword(``)
         setConfirmPassword(``)
     };
     const bodyContent = (

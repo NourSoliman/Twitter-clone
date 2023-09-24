@@ -10,4 +10,6 @@ router.get(`/register`, (req , res) => {
 router.post(`/register`, usersController.register)
 router.post(`/login`,usersController.login)
 router.get(`/allusers/:page`,usersController.getAllUsers)
+router.get(`/user/:userId`,usersController.getUserData)
+router.put(`/edit/:userId` , usersController.updateUserField)
 module.exports = router;
