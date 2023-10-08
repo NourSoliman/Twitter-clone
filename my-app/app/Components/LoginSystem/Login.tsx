@@ -1,4 +1,4 @@
-
+"use client"
 import React , {useState} from 'react'
 import Input from '../Modals/Inputs'
 import Modal from '../Modals/Modal'
@@ -14,12 +14,10 @@ function Login() {
     const [password , setPassword] = useState(``)
     const [isLoading , setIsLoading] = useState(false)
     const {isLoginFormOpen} = useSelector((state:RootState)=>state.dialog)
-    console.log(isLoginFormOpen)
     const dispatch = useDispatch()
     //close login modal
     const handleOnClose =() =>{
         dispatch(closeDialog())
-        console.log(`closed`)
     }
 
     //login function
@@ -44,15 +42,12 @@ function Login() {
             if (response && response.token) {
                 const token = response.token;
           
-                // Use Nookies to set the token cookie
+                
                 setCookie(null, 'token', token, {
                   maxAge: 24 * 60 * 60, // 24 hours in seconds
                   path: '/', // Cookie path
-                  secure: false, // Change to true if using HTTPS
+                  secure: false, 
                 });
-          
-                console.log(token, `token`);
-                // Refresh the page after successful login
                 window.location.reload();
               }
           

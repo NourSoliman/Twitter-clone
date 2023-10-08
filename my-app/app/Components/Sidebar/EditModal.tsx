@@ -21,7 +21,6 @@ const  EditModal = () => {
     const token: any = Cookies.get(`token`)
     const decode: { userId: string } = jwt_decode(token);
     const currentUser = decode.userId;
-    console.log(currentUser , `userId from editModal`)
     const isEditFormOpen = useSelector((state:RootState)=>state.dialog.isEditFormOpen)
     const handleCloseEditForm = () =>{
         dispatch(CloseEditForm())
@@ -35,16 +34,16 @@ const  EditModal = () => {
         setFirstName(user?.firstName)
         setBio(user?.bio)
     },[user])
-    const onSubmit = useCallback(()=>{
+    const onSubmit = useCallback( async ()=>{
       const updatedFields = {
         firstName : firstName,
         bio:bio,
         profileImage:profileImage,
         coverImage : coverImage
       }
-      dispatch(ChangeBioAction(currentUser , updatedFields) as any)
-      dispatch(CloseEditForm())
-      window.location.reload()
+      await dispatch(ChangeBioAction(currentUser , updatedFields) as any)
+      await dispatch(CloseEditForm())
+      await dispatch(GetUserData(currentUser) as any)
       toast.success(`Updated`)
     },[dispatch , firstName , bio , profileImage , coverImage , user , currentUser , router])
     const ContentBody = (

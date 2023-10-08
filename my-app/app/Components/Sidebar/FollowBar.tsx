@@ -9,7 +9,6 @@ function FollowBar() {
   const dispatch = useDispatch()
   const {users} = useSelector((state:RootState)=> state.user)
   const [page , setPage] = useState(1)
-  console.log(users , `usersss`)
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
@@ -18,7 +17,9 @@ function FollowBar() {
   
   useEffect(()=>{
     dispatch(fetchAllUsers(page) as any)
-  },[dispatch ])
+    console.log(`dispatched fetch all users `)
+  },[dispatch , page ])
+  
   if (!Array.isArray(users)) {
     return null;
   }

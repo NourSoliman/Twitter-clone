@@ -14,7 +14,7 @@ const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large,
         <button
         disabled={disabled}
         onClick={onClick}
-        className={`disabeld:opacity-70 
+        className={`disabled:opacity-70 
         disabled:cursor-not-allowed
         rounded-full
         font-semibold

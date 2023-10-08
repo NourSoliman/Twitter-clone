@@ -1,3 +1,5 @@
+"use client"
+
 import React , {useState} from 'react'
 import Input from '../Modals/Inputs'
 import Modal from '../Modals/Modal'
@@ -13,7 +15,6 @@ const Register = () => {
     const [confirmPassword , setConfirmPassword] = useState(``)
     const [isLoading , setIsLoading] = useState(false)
     const {isRegisterFormOpen} = useSelector((state : RootState)=>state.dialog)
-    console.log(isRegisterFormOpen , `is register`);
     const handleSignInLink = () => {
     dispatch(openDialog())
     dispatch(CloseRegisterForm())

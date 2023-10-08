@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken'
 import {Request , Response , NextFunction} from 'express'
 import {Document} from 'mongoose'
 interface DecodedToken{
+  userId:string,
+    _id:string,
+    followingIds: any,
     email:string,
     firstName:string,
 }

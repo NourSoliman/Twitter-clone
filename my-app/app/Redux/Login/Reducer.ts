@@ -2,7 +2,7 @@ import {
     REGISTER_FIRST, REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_FIRST, LOGIN_SUCCESS,
     LOGOUT_FAIL, LOGOUT_FIRST, LOGOUT_SUCCESS, ALL_FAIL, ALL_FIRST, ALL_SUCCESS, IMAGES_SUCCESS,
     GET_USER_DATA_FAIL, GET_USER_DATA_FIRST, GET_USER_DATA_SUCCESS, CHANGE_BIO_FAIL, CHANGE_BIO_FIRST,
-    CHANGE_BIO_SUCCESS,
+    CHANGE_BIO_SUCCESS, GET_PROFILE_IMAGE_SUCCESS,FOLLOW_SOMEONE,GET_LOGGED_IN_USER , UN_FOLLOW_SOMEONE
 } from "./Types";
 //FIRST TYPES///////////////////////////
 interface RegisterFirst {
@@ -56,6 +56,15 @@ interface RegisterSuccess {
     }
     isLoading: boolean
 }
+interface GetProfileImageSuccess {
+    type: typeof GET_PROFILE_IMAGE_SUCCESS,
+    payload: {
+        userId: string,
+        ProfileImage: string,
+        firstName:string,
+        lastName:string,
+    }
+}
 export interface User {
     firstName: string;
     lastName: string;
@@ -87,6 +96,21 @@ interface ChangeProfileBioSuccess {
     type: typeof CHANGE_BIO_SUCCESS,
     payload: User,
     isLoading: boolean,
+}
+interface FollowSomeone{
+    type:typeof FOLLOW_SOMEONE,
+    payload:User,
+    isLoading:boolean,
+}
+interface UnFollow {
+    type:typeof UN_FOLLOW_SOMEONE,
+    payload:User,
+    isLoading:boolean,
+}
+interface GetLoggedUser {
+    type:typeof GET_LOGGED_IN_USER,
+    payload:User,
+    isLoading:boolean,
 }
 ///////////////////FAIL TYPEs////////////////////////////////////////
 interface RegisterFail {
@@ -131,7 +155,7 @@ type actionTypes = RegisterFirst | RegisterSuccess | RegisterFail |
     LoginFail | LoginFirst | LoginSuccess | LogoutFail |
     LogoutFirst | LogoutSuccess | AllSuccess | AllFail | AllFirst | Image |
     GetUserSuccess | GetUser | GetUserFail | ChangeBio | ChangeBioFail
-    | ChangeProfileBioSuccess
+    | ChangeProfileBioSuccess | GetProfileImageSuccess | FollowSomeone | GetLoggedUser | UnFollow
 
 
 interface intiState {
@@ -141,6 +165,8 @@ interface intiState {
     isLoggedIn: boolean,
     error: string,
     users: User[],
+    ProfileImage: object,
+    loggedUser : object,
 }
 const initialState: intiState = {
     isLoading: false,
@@ -149,6 +175,17 @@ const initialState: intiState = {
     message: "",
     error: "",
     isLoggedIn: false,
+    ProfileImage: {},
+    loggedUser:{
+        firstName: '',      
+        lastName: '',
+        email: '',
+        profileImage: '',
+        coverImage: '',
+        bio: '',
+        _id: '',
+        isFollowing: false,
+    },
 }
 const loginReducer = (state = initialState, action: actionTypes) => {
     switch (action.type) {
@@ -203,6 +240,48 @@ const loginReducer = (state = initialState, action: actionTypes) => {
                 user: action.payload,
                 isLoading: false,
             }
+            case GET_PROFILE_IMAGE_SUCCESS:
+                return {
+                    ...state,
+                    ProfileImage: {
+                        ...state.ProfileImage,
+                        [action.payload.userId]: action.payload.ProfileImage,
+                    },
+                    // Include firstName and lastName in the user object
+                    user: {
+                        ...state.user,
+                        [action.payload.userId]: {
+                            firstName: action.payload.firstName,
+                            lastName: action.payload.lastName,
+                        },
+                    },
+                };
+            case GET_LOGGED_IN_USER:
+                return{
+                    ...state,
+                    loggedUser:action.payload,
+                    isLoading:false,
+                }
+            case FOLLOW_SOMEONE:
+                return{
+                    ...state,
+                    // user:action.payload,
+                    loggedUser:{
+                    ...state.loggedUser,
+                    isFollowing:true,
+                    },
+                    isLoading:false,
+                }
+            case UN_FOLLOW_SOMEONE:
+                return{
+                    ...state,
+                    // user:action.payload,
+                    loggedUser:{
+                        ...state.loggedUser,
+                        isFollowing:false,
+                        },
+                    isLoading:false
+                }
         case LOGIN_FAIL:
             // const {error} = action.payload
             return {

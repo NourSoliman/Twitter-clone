@@ -1,24 +1,35 @@
-import React, { useCallback   } from 'react'
+import React, { useCallback , useEffect  } from 'react'
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useDispatch , useSelector  } from 'react-redux'
 import pegasus from '../../../public/Images/user.jpg'
+
 import { User } from '@/app/Redux/Login/Reducer';
+import { RootState } from '@/app/Redux/MainStore/rootReducer';
+import { GetUserProfileImage } from '@/app/Redux/Login/Action';
 interface UserAvatar{
     userId:any, 
-    imageType?:string,
+    // imageType?:string,
     isLarge?:boolean,
     border?:boolean,
-    user?:User,
+    // user?:User,
 
+    profileIamge?:string,
 }
-const  Avatar : React.FC<UserAvatar> = ({userId , isLarge , imageType , border , user  }) => {
+const  PostAvatar : React.FC<UserAvatar> = ({profileIamge , userId , border , isLarge }) => {
     const router = useRouter()
-    const onClick = useCallback((event : any)=>{
+    const dispatch = useDispatch()
+    const   onClick = useCallback((event : any)=>{
         event.stopPropagation();
         const url = `/users/${userId}`
         router.push(url)
     },[router, userId])
+    const { ProfileImage }: any = useSelector((state: RootState) => state.user);
+    const profileImage = ProfileImage[userId] || pegasus;
 
+    useEffect(()=>{
+        dispatch(GetUserProfileImage(userId) as any)
+    },[dispatch , userId])
   return (
     <div className={`
     ${border ? `border-4 border-black` : ``}
@@ -39,7 +50,7 @@ const  Avatar : React.FC<UserAvatar> = ({userId , isLarge , imageType , border ,
     }}
     alt="avatar"
     onClick={onClick}   
-    src={user?.profileImage || pegasus}
+    src={profileImage || pegasus}
     // src={ProfileImage|| pegasus}
     />
 
@@ -47,4 +58,4 @@ const  Avatar : React.FC<UserAvatar> = ({userId , isLarge , imageType , border ,
   )
 }
 
-export default Avatar
+export default PostAvatar

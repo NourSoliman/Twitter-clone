@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const PostsSchema = new mongoose.Schema({
+const CommentSchema = new mongoose.Schema({
     body:{
         type:String,
         required:true,
@@ -16,14 +16,10 @@ const PostsSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:`Users`,
     },
-    comments:[
-        {
+    postId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:`Comments`
-    }],
-    likedIds:{
-        type:Array,
+        ref:`Posts`
     }
 })
-const Posts = mongoose.model(`Posts` , PostsSchema)
-export default Posts
+const Comments = mongoose.model(`Comments` , CommentSchema)
+export default Comments

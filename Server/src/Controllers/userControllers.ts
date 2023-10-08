@@ -3,7 +3,6 @@ import Users from '../Models/Users'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import { setCookie } from 'nookies';
 
 async function register(req: Request, res: Response, next: NextFunction) {
     try {
@@ -63,7 +62,9 @@ async function login(req: Request, res: Response) {
         const token = jwt.sign({
             firstName: userEmail.firstName,
             email: userEmail.email,
-            userId: userEmail._id
+            userId: userEmail._id,
+            followingIds:userEmail.followingIds,
+            followerIds:userEmail.followerIds,
         },
             process.env.JWT_SECRET,
             { expiresIn: "24h" }
@@ -107,8 +108,8 @@ async function getUserData(req: Request, res: Response) {
         if (!user) {
             return res.status(400).json({ error: `user not exist` })
         }
-        const { firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds } = user
-        return res.status(201).send({ firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds })
+        const { firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts } = user
+        return res.status(201).send({ firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts })
     } catch (error) {
         res.status(500).json({ error: `Eternal server error` })
     }
@@ -153,11 +154,64 @@ async function updateUserField(req: Request, res: Response) {
         res.status(500).json({ error: `Internal server error` });
     }
 }
+//FOLLOW API FUNCTION
+async function follow(req: Request, res: Response) {
+    try{
+    const {userId} = req.params;
+    const currentUserid = req.user.userId
+    const currentUser = await Users.findById(currentUserid);
+    const secondUser = await Users.findById(userId)
 
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    if (currentUser.followingIds.includes(userId)) {
+      return res.status(400).json({ error: 'You are already following this user.' });
+    }
+        currentUser.followingIds.push(userId)
+        await currentUser.save()
+        secondUser.followerIds.push(currentUserid)
+        await secondUser.save()
+        res.status(200).json({ message: 'You are now following this user.' });
+
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error:`Internal server error`})
+    }
+}
+async function unFollow(req: Request, res: Response) {
+    try{
+    const {userId} = req.params;
+    const currentUserid = req.user.userId
+    const currentUser = await Users.findById(currentUserid);
+    const secondUser = await Users.findById(userId)
+    if (!currentUser || !secondUser) {
+        return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Check if the current user is already following the target user
+    if (!currentUser.followingIds.includes(userId)) {
+        return res.status(400).json({ error: 'You are not following this user.' });
+    }
+    currentUser.followingIds = currentUser.followingIds.filter((id) => id !== userId);
+    secondUser.followerIds = secondUser.followerIds.filter((id) => id !== currentUserid);
+    await currentUser.save();
+    await secondUser.save();
+    res.status(200).json({ message: 'You have unfollowed this user.' });
+
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error:`Internal server error`})
+
+    }
+}
 module.exports = {
     register,
     login,
     getAllUsers,
     getUserData,
     updateUserField,
+    follow,
+    unFollow,
 }

@@ -13,22 +13,26 @@ import {SlLogin} from 'react-icons/sl'
 import { openDialog } from '@/app/Redux/dialog/Actions'
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
 // import { destroyCookie } from 'nookies';
-import jwt_decode from 'jwt-decode'
+import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/navigation'
 function Sidebar() {
     const dispatch = useDispatch()
     const [isLoading , setIsLoading] = useState(true)
+    // const [token, setToken] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const router = useRouter()
     useEffect(() => {
         if (typeof window !== 'undefined') {
           // Check for the token cookie after the component mounts on the client side
         const newToken = Cookies.get('token') ?? null;
+
         setToken(newToken);
         setIsLoading(false)
         }
     }, []);
+    
     const decodedToken:{userId:string | null} | null = token? jwt_decode(token) : null;
+
     const userId = decodedToken? decodedToken.userId : null;
     const handleSignOut = () =>{
         console.log(`logged out`);

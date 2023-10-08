@@ -14,16 +14,20 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@reduxjs/toolkit": "^1.9.5",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
+    "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^3.1.2",
     "lucide-react": "^0.276.0",
+    "mongoose": "^7.6.0",
     "next": "13.4.19",
     "next-themes": "^0.2.1",
     "nookies": "^2.5.2",
@@ -33,6 +37,7 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.46.1",
     "react-icons": "^4.11.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^8.1.2",
     "react-spinners": "^0.13.8",
     "react-toastify": "^9.1.3",
@@ -45,7 +50,9 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/js-cookie": "^3.0.3",
+    "@types/jsonwebtoken": "^9.0.3",
     "js-cookie": "^3.0.5"
   }
 }

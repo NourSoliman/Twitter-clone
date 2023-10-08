@@ -2,10 +2,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { ReduxProvider } from './Redux/MainStore/StoreProvider'
+import { ReduxProvider } from '@/app/Redux/MainStore/StoreProvider'
 import { ToastProdiver } from '@/Providers/Toast-Provider'
-import Sidebar from './Components/Sidebar/Sidebar'
-import FollowBar from './Components/Sidebar/FollowBar'
+import Sidebar from '@/app/Components/Sidebar/Sidebar'
+import FollowBar from '@/app/Components/Sidebar/FollowBar'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -22,9 +22,9 @@ export default function RootLayout({
   return (
 
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} style={{height:`100vh`, backgroundColor:`black`}}>
       <ReduxProvider>
-      <div className="h-screen bg-black">
+      <div >
         <div className='container h-full mx-auto xl:px-30 max-w-6xl'> 
         <div className='grid grid-cols-4 h-full'>
           <Sidebar />

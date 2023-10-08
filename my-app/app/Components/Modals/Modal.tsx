@@ -14,8 +14,7 @@ interface ModalProps {
   disabled?: boolean;
 }
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, actionLabel, footer, disabled }) => {
-  console.log(isOpen , `from modal`)
-
+  
   const handleClose = useCallback(() => {
     if (disabled) {
       return;
