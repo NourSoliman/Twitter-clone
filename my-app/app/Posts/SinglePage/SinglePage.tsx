@@ -25,7 +25,7 @@ function SinglePage() {
   const currentUser = decode?.userId;
   const singlePost = useSelector((state:RootState) => state.posts.singlePost) as SinglePost
   const  loggedUser : any = useSelector((state: RootState) => state.user.loggedUser);
-  const postReplyComments  = useSelector((state:RootState) => state.posts.postReplyComments)
+  const postReplyComments: any = useSelector((state:RootState) => state.posts.postReplyComments)
   console.log(postReplyComments , `reply comments`)
 
   useEffect(()=>{
