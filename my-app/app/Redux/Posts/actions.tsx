@@ -9,7 +9,8 @@ import {
 } from './types'
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
-const serverUrl = "http://localhost:1997/api"
+// const serverUrl = "http://localhost:1997/api"
+const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
 const getBearerToken = () => {
     const token = Cookies.get(`token`)
     return token

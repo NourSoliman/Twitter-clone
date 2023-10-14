@@ -6,7 +6,8 @@ import {
 } from "./Types";
 import {  Dispatch } from "redux";
 import Cookies from "js-cookie";
-const serverUrl = "http://localhost:1997/api"
+// const serverUrl = "http://localhost:1997/api"
+    const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
 interface UserData {
     firstName: string;
     email: string;
