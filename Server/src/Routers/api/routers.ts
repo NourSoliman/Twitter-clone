@@ -24,4 +24,5 @@ router.post(`/likePost/:postId` , auth , postsController.likePost)
 router.post(`/unlikePost/:postId` , auth , postsController.unLikePost)
 router.post(`/reply/:postId` , auth , postsController.addReplyToPost)
 router.get(`/posts/reply/:postId` , postsController.getReply)
+router.get(`/notifications` , auth , postsController.getNotifications)
 module.exports = router;

@@ -4,7 +4,8 @@ import {
     GET_USER_POSTS_SUCCESS, GET_USER_SINGLE_PAGE_FAIL, GET_USER_SINGLE_PAGE_FIRST,
     GET_USER_SINGLE_PAGE_SUCCESS, LIKE_USER_POST, UNLIKE_USER_POST, USER_POSTS_LIKE,
     USER_POSTS_UNLIKE, SINGLE_PAGE_LIKE, SINGLE_PAGE_UNLIKE, ADD_REPLY_TO_POST_SUCCESS,
-    GET_REPlY_POST_SUCCESS
+    GET_REPlY_POST_SUCCESS,
+    GET_NOTIFICATIONS_SUCCESS
 } from './types'
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
@@ -46,7 +47,7 @@ export const addPost = (userId: string, postContent: string) => {
 export const GetAllPosts = (page: number) => {
     return async (dispatch: Dispatch) => {
         try {
-            // dispatch({type:GET_POST_FIRST})
+            dispatch({type:GET_POST_FIRST})
             const response = await fetch(`${serverUrl}/allposts/${page}`)
 
             if (response.ok) {
@@ -272,24 +273,46 @@ export const SinglePageUnLike = (postId: string) => {
         }
     }
 }
-export const replyOnPost = (postId: string, postContent: string) => {
+    export const replyOnPost = (postId: string, postContent: string) => {
+        return async (dispatch: Dispatch) => {
+            const token = getBearerToken()
+            try {
+                const response = await fetch(`${serverUrl}/reply/${postId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ body: postContent })
+                })
+                if (response.ok) {
+                    const data = await response.json()
+                    console.log(data, `this data coming from reply`)
+                    dispatch({
+                        type: ADD_REPLY_TO_POST_SUCCESS,
+                        payload: data.reply,
+                    })
+                } else {
+                    const dataError = await response.json()
+                    throw new Error(dataError)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+
+export const getReplyOnPosts = (postId: string) => {
     return async (dispatch: Dispatch) => {
-        const token = getBearerToken()
         try {
-            const response = await fetch(`${serverUrl}/reply/${postId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ body: postContent })
-            })
+            const response = await fetch(`${serverUrl}/posts/reply/${postId}`)
+            console.log(response, `this response coming from REPLY action`)
             if (response.ok) {
                 const data = await response.json()
                 console.log(data, `this data coming from reply`)
                 dispatch({
-                    type: ADD_REPLY_TO_POST_SUCCESS,
-                    payload: data,
+                    type: GET_REPlY_POST_SUCCESS,
+                    payload: data.comments,
                 })
             } else {
                 const dataError = await response.json()
@@ -301,17 +324,21 @@ export const replyOnPost = (postId: string, postContent: string) => {
     }
 }
 
-export const getReplyOnPosts = (postId: string,) => {
+export const getNotifications = () => {
     return async (dispatch: Dispatch) => {
+        const token = getBearerToken()
         try {
-            const response = await fetch(`${serverUrl}/posts/reply/${postId}`)
-            console.log(response, `this response coming from REPLY action`)
+            const response = await fetch(`${serverUrl}/notifications`,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            
             if (response.ok) {
                 const data = await response.json()
-                console.log(data, `this data coming from reply`)
                 dispatch({
-                    type: GET_REPlY_POST_SUCCESS,
-                    payload: data.comments,
+                    type: GET_NOTIFICATIONS_SUCCESS,
+                    payload: data,
                 })
             } else {
                 const dataError = await response.json()

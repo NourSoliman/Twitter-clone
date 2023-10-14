@@ -108,8 +108,8 @@ async function getUserData(req: Request, res: Response) {
         if (!user) {
             return res.status(400).json({ error: `user not exist` })
         }
-        const { firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts } = user
-        return res.status(201).send({ firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts })
+        const { firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts , hasNotification } = user
+        return res.status(201).send({ firstName, lastName, email, profileImage, coverImage, bio, createdAt, followingIds, followerIds , posts , hasNotification })
     } catch (error) {
         res.status(500).json({ error: `Eternal server error` })
     }

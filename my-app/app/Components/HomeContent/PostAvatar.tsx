@@ -3,10 +3,10 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useDispatch , useSelector  } from 'react-redux'
 import pegasus from '../../../public/Images/user.jpg'
-
-import { User } from '@/app/Redux/Login/Reducer';
+import Cookies from 'js-cookie';
 import { RootState } from '@/app/Redux/MainStore/rootReducer';
 import { GetUserProfileImage } from '@/app/Redux/Login/Action';
+import { openDialog } from '@/app/Redux/dialog/Actions';
 interface UserAvatar{
     userId:any, 
     // imageType?:string,
@@ -19,10 +19,15 @@ interface UserAvatar{
 const  PostAvatar : React.FC<UserAvatar> = ({profileIamge , userId , border , isLarge }) => {
     const router = useRouter()
     const dispatch = useDispatch()
+    const token = Cookies.get(`token`) || ``;
     const   onClick = useCallback((event : any)=>{
         event.stopPropagation();
-        const url = `/users/${userId}`
-        router.push(url)
+        if(token){
+            const url = `/users/${userId}`
+            router.push(url)
+        } else {
+            dispatch(openDialog() as any)
+        }
     },[router, userId])
     const { ProfileImage }: any = useSelector((state: RootState) => state.user);
     const profileImage = ProfileImage[userId] || pegasus;

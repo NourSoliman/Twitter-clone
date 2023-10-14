@@ -6,7 +6,7 @@ import { GetPostSinglePage, getReplyOnPosts, LikeProfilePost, SinglePageLike, Si
 import { CommentInterface, SinglePost } from '@/app/Redux/Posts/reducers'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { useRouter,  useParams } from 'next/navigation'
-import React, {useCallback, useEffect } from 'react'
+import React, {useCallback, useEffect , useState } from 'react'
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from 'react-icons/ai'
 import { useSelector  , useDispatch } from 'react-redux'
 import Cookies from 'js-cookie'
@@ -14,6 +14,7 @@ import jwt_decode from "jwt-decode";
 import AddPost from '@/app/Components/HomeContent/AddPost'
 import  Reply  from './Reply'
 import Header from '@/app/Components/Header/Header'
+import { openDialog } from '@/app/Redux/dialog/Actions'
 
 function SinglePage() {
   const dispatch = useDispatch()
@@ -26,12 +27,15 @@ function SinglePage() {
   const  loggedUser : any = useSelector((state: RootState) => state.user.loggedUser);
   const postReplyComments  = useSelector((state:RootState) => state.posts.postReplyComments)
   console.log(postReplyComments , `reply comments`)
+
   useEffect(()=>{
     const postId = params.postId
     dispatch(GetPostSinglePage(postId as string) as any)
     dispatch(getReplyOnPosts(postId as string) as any)
-    dispatch(GetLoggedInUser(currentUser) as any)
-  },[params.postId ])
+    if(token){
+      dispatch(GetLoggedInUser(currentUser) as any)
+    }
+  },[params.postId , currentUser ])
   
   const { user } = useSelector((state: RootState) => state.user) as any;
   console.log(user , `user[reply.userId]`)
@@ -42,10 +46,14 @@ function SinglePage() {
   const handleLike = useCallback(
     async (postId: any) => {
       console.log(`LIKEDDDDDD111`)
-      try {
-        await dispatch(SinglePageLike(postId) as any);
-      } catch (error) {
-        console.log(error);
+      if(token){        
+        try {
+          await dispatch(SinglePageLike(postId) as any);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        dispatch(openDialog() as any)
       }
     },
     [dispatch]
@@ -63,8 +71,8 @@ function SinglePage() {
   
   return (
     <div>
-         <Header label={userFirstName} showBackArrow/>
-      <div className="text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800" key={singlePost?._id}>
+        <Header label={userFirstName + ` ` + `Post`} showBackArrow/>
+      <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800" key={singlePost?._id}>
         <PostAvatar userId={singlePost.userId} />
         <div className="flex flex-col">
           <div className="flex flex-row items-center gap-2 cursor-pointer">
@@ -77,7 +85,7 @@ function SinglePage() {
             </p>
           </div>
           <div>
-            <p className="text-white">{singlePost?.body}</p>
+            <p className="text-black dark:text-white">{singlePost?.body}</p>
           </div>
           <div className="flex flex-row items-center mt-3 gap-10">
             <div className="flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">

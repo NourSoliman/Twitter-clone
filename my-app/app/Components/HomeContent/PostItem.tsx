@@ -1,22 +1,26 @@
-import React, {  useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNowStrict } from "date-fns";
 import PostAvatar from "./PostAvatar";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
-import {  LikePost, UnLikePost } from "@/app/Redux/Posts/actions";
+import { LikePost, UnLikePost } from "@/app/Redux/Posts/actions";
+import PostsLoading from "./loading";
+import { openDialog } from "@/app/Redux/dialog/Actions";
+import Cookies from "js-cookie";
 interface PostsProps {
   userId?: string;
   post?: any;
   onSubmit?: (postId: string) => void;
   page: number;
-  user:any;
+  user: any;
+  isLoading?: boolean,
 }
-const PostItem: React.FC<PostsProps> = ({ userId, post, page , user }) => {
+const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const token = Cookies.get(`token`) || ``
   //NAVIGATE TO POST USER PAGE
-  
   const goToUser = useCallback(
     (event: any) => {
       event.stopPropagation();
@@ -28,37 +32,50 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page , user }) => {
   const goToPost = useCallback(
     (event: any) => {
       event.stopPropagation();
-      router.push(`/Posts/${post?._id}`);
+      if (token) {
+        router.push(`/Posts/${post?._id}`);
+      } else {
+        dispatch(openDialog() as any)
+      }
     },
     [router, post?._id]
   );
 
-  
-  const userFirstName = user[post?.userId]?.firstName;
-  const userLastName = user[post?.userId]?.lastName;
+
+  const userFirstName = user && user[post?.userId] ? user[post.userId].firstName || "" : "";
+  const userLastName = user && user[post?.userId] ? user[post.userId].lastName || "" : "";
+
   const likedPost = post?.likedIds?.includes(userId);
 
 
-const handleLike = useCallback(async()=>{
-    try{
-    if(post?.likedIds.includes(userId)) {
-        await dispatch(UnLikePost(post?._id) as any)
-    } else {
-        await dispatch(LikePost(post?._id) as any)
+  const handleLike = useCallback(async () => {
+    try {
+      if (token) {
+        if (post?.likedIds.includes(userId)) {
+          await dispatch(UnLikePost(post?._id) as any)
+        } else {
+          await dispatch(LikePost(post?._id) as any)
+        }
+      } else {
+        dispatch(openDialog() as any)
+      }
+    } catch (error) {
+      console.log(error)
     }
-    }catch(error){
-        console.log(error)
-    }
-},[dispatch, post, page])
+  }, [dispatch, post, page])
   const handlecreateAt = useMemo(() => {
     if (!post?.createdAt) {
       return null;
     }
     return formatDistanceToNowStrict(new Date(post.createdAt));
   }, [post?.createdAt]);
-
+  if (isLoading) {
+    return (
+      <PostsLoading />
+    )
+  }
   return (
-    <div className="text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800">
+    <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800">
       <PostAvatar userId={post?.userId} />
       <div className="flex flex-col">
         <div
@@ -70,7 +87,7 @@ const handleLike = useCallback(async()=>{
           <p className="text-neutral-400 text-sm">{handlecreateAt}</p>
         </div>
         <div>
-          <p className="text-white" onClick={goToUser}>
+          <p className="text-black dark:text-white" onClick={goToUser}>
             {post?.body}
           </p>
         </div>
@@ -95,9 +112,7 @@ const handleLike = useCallback(async()=>{
             {/* <AiOutlineHeart size={20} /> */}
             <p>{post?.likedIds?.length || 0}</p>
           </div>
-
         </div>
-        <div></div>
       </div>
     </div>
   );

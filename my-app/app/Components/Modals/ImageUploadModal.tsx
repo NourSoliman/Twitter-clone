@@ -34,7 +34,7 @@ const ImageUploadModal: React.FC<ImageUploadProps> = ({ label, value, disabled, 
     return (
         <div
             {...getRootProps({
-                className: "w-full p-4 text-white text-center border-2 border-dotted rounder-md border-entural-700"
+                className: "w-full p-4 text-black dark:text-white text-center border-2 border-dotted rounder-md border-entural-700"
             })}
         >
             <input  {...getInputProps()} />
@@ -42,7 +42,7 @@ const ImageUploadModal: React.FC<ImageUploadProps> = ({ label, value, disabled, 
                 <div className='flex items-center justify-center'>
                     <Image src={base64} height="100" width="100" alt="image" />
                 </div>
-            ) : (<p className='text-white'>{label}</p>)}
+            ) : (<p className='text-black dark:text-white'>{label}</p>)}
         </div>
     )
 }

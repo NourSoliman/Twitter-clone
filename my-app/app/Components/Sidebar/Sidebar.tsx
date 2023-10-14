@@ -9,19 +9,21 @@ import { LogoutAction } from '@/app/Redux/Login/Action'
 import { useSelector , useDispatch } from 'react-redux'
 import TweetButton from './TweetButton'
 import Cookies from "js-cookie";
-import {SlLogin} from 'react-icons/sl'
 import { openDialog } from '@/app/Redux/dialog/Actions'
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
-// import { destroyCookie } from 'nookies';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/navigation'
+import Loading from './loading'
+import DarkMode from './DarkMode'
 function Sidebar() {
     const dispatch = useDispatch()
     const [isLoading , setIsLoading] = useState(true)
-    // const [token, setToken] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const router = useRouter()
+    const { loggedUser }: any = useSelector((state: RootState) => state.user);
+
     useEffect(() => {
+        console.log(token ,`this is typeof window`)
         if (typeof window !== 'undefined') {
           // Check for the token cookie after the component mounts on the client side
         const newToken = Cookies.get('token') ?? null;
@@ -30,7 +32,7 @@ function Sidebar() {
         setIsLoading(false)
         }
     }, []);
-    
+
     const decodedToken:{userId:string | null} | null = token? jwt_decode(token) : null;
 
     const userId = decodedToken? decodedToken.userId : null;
@@ -54,7 +56,8 @@ function Sidebar() {
         {
             label:"Notifications",
             href:"/notifications",
-            icon:BsBellFill
+            icon:BsBellFill,
+            alert:loggedUser.hasNotification,
         },
         {
             label:"Profile",
@@ -63,9 +66,11 @@ function Sidebar() {
         },
 
     ]
-        if (isLoading) {
-            return <div>Loading...</div>;
-        }
+    if(isLoading) {
+        return (
+            <Loading isLoading={isLoading}/>
+        )
+    }
   return (
     <div className='col-span-1 h-full pr-4 md:pr-6' >
         <div className='flex flex-col items-end'>
@@ -73,16 +78,20 @@ function Sidebar() {
                 <SideBarLogo />
                 {items.map((item)=>(
                     (item.href === '/' || token) ? (
-                        <SidebarItems key={item.href} label={item.label} href={item.href} icon={item.icon} />
+                        <SidebarItems key={item.href} label={item.label} href={item.href} icon={item.icon} alert={item.alert}/>
                     ) : (
-                        <SidebarItems key={item.href} label={item.label} icon={item.icon} onClick={handleShowLogIn} />
+                        <SidebarItems key={item.href} label={item.label} icon={item.icon} onClick={handleShowLogIn} alert={item.alert}/>
                     )
                 ))}
-                {token &&
-                <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut}/>
+                <DarkMode />
+                {/* {token &&
+                <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut} isLoading={true}/>
+                } */}
+                {token ? (
+                    <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut} isLoading={true}/>
+                ):(null)
                 }
                 {/* <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut}/>: */}
-
                 <TweetButton />
             </div>
         </div>

@@ -1,16 +1,21 @@
 import PostAvatar from '@/app/Components/HomeContent/PostAvatar'
-import { User } from '@/app/Redux/Login/Reducer';
+import { User, Username } from '@/app/Redux/Login/Reducer';
 import { CommentInterface } from '@/app/Redux/Posts/reducers';
 import { formatDistanceToNowStrict } from 'date-fns';
 import React, { useMemo } from 'react'
 interface replyProps {
     comment?:CommentInterface,
-    user?:User,
+    user?:Username,
 }
   
 const Reply : React.FC<replyProps> = ({comment , user }) => {
-    const userFirstName: string | undefined = user ? user[comment?.userId]?.firstName : undefined;
-    const userLastName: string | undefined = user ? user[comment?.userId]?.lastName : undefined;
+  const userFirstName: string | undefined = user && comment
+  ? user[comment.userId]?.firstName
+  : undefined;
+
+const userLastName: string | undefined = user && comment
+  ? user[comment.userId]?.lastName
+  : undefined;
 
     const handlecreateAt = useMemo(() => {
         if (!comment?.createdAt) {
@@ -20,7 +25,7 @@ const Reply : React.FC<replyProps> = ({comment , user }) => {
       }, [comment?.createdAt]);
 
   return (
-    <div className="text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800">
+    <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800">
       <PostAvatar userId={comment?.userId} />
       <div className="flex flex-col">
         <div
@@ -32,7 +37,7 @@ const Reply : React.FC<replyProps> = ({comment , user }) => {
           <p className="text-neutral-400 text-sm">{handlecreateAt}</p>
         </div>
         <div>
-          <p className="text-white">
+          <p className="text-black dark:text-white">
             {comment?.body}
           </p>
         </div>

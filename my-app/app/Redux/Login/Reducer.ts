@@ -65,7 +65,14 @@ interface GetProfileImageSuccess {
         lastName:string,
     }
 }
+export interface Username {
+    [key:string]:{
+        firstName:string,
+        lastName:string,
+    },
+}
 export interface User {
+
     firstName: string;
     lastName: string;
     email: string;

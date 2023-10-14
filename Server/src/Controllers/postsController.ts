@@ -1,8 +1,8 @@
 import Posts from "../Models/Posts";
 import Users from "../Models/Users";
 import Comments from "../Models/Comments"
-import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
+import Notifications from '../Models/Notifications'
+import { Request, Response } from "express";
 //POST REQUEST TO CREATE POST
 async function post(req: Request, res: Response) {
   try {
@@ -76,6 +76,7 @@ async function likePost(req: Request, res: Response) {
   const currentUserid = req.user.userId;
   try {
     const post = await Posts.findById(postId);
+    const postOwnerUserId = post.userId;
     if (!post) {
       return res.status(404).json({ error: "Post not found." });
     }
@@ -84,6 +85,21 @@ async function likePost(req: Request, res: Response) {
         .status(400)
         .json({ error: "You have already liked this post." });
     }
+    const userWhoLike = await Users.findById(currentUserid)
+    const notification = new Notifications({
+      type:`Like`,
+      body:`${userWhoLike.firstName} liked your Tweet`,
+      userId:postOwnerUserId,
+      postId:postId,
+      likedUserId:currentUserid,
+    })
+    await notification.save();
+    const postOwnerUser = await Users.findById(postOwnerUserId);
+    if (postOwnerUser) {
+      postOwnerUser.hasNotification = true;
+      await postOwnerUser.save();
+    }
+
     post.likedIds.push(currentUserid);
     await post.save();
     const updatedPost = await Posts.findById(postId);
@@ -129,6 +145,8 @@ async function addReplyToPost(req: Request, res: Response) {
 
     // Check if the post exists
     const post = await Posts.findById(postId);
+    const postOwnerUserId = post.userId;
+
     if (!post) {
       return res.status(404).json({ error: "Post not found." });
     }
@@ -139,6 +157,21 @@ async function addReplyToPost(req: Request, res: Response) {
       userId:currentUserid,
       postId:postId,
     });
+    //notification
+    const userWhoReply = await Users.findById(currentUserid)
+    const notification = new Notifications({
+      type:`Reply`,
+      body:`${userWhoReply.firstName} replied to your Tweet`,
+      userId:postOwnerUserId,
+      postId:postId,
+      likedUserId:currentUserid,
+    })
+    await notification.save();
+    const postOwnerUser = await Users.findById(postOwnerUserId);
+    if (postOwnerUser) {
+      postOwnerUser.hasNotification = true;
+      await postOwnerUser.save();
+    }
 
     // Save the comment
     await comment.save();
@@ -149,7 +182,7 @@ async function addReplyToPost(req: Request, res: Response) {
     // Save the updated post
     await post.save();
 
-    return res.status(200).json({ message: "Reply added successfully." });
+    return res.status(200).json({reply:comment , message: "Reply added successfully." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -162,8 +195,11 @@ async function getReply(req: Request, res: Response){
   
       // Find the post by postId
       // const post = await Posts.findById(postId);
-      const post = await Posts.findById(postId).populate('comments');
-      console.log(post , `this main post`)
+      const post = await Posts.findById(postId).populate({
+        path: 'comments',
+        options: { sort: { createdAt: -1 } }, 
+      });
+
       if (!post) {
         return res.status(404).json({ error: 'Post not found' });
       }
@@ -178,6 +214,24 @@ async function getReply(req: Request, res: Response){
       res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+//get notifications
+  async function getNotifications(req: Request, res: Response){
+    try{
+      const notifications = await Notifications.find({userId:req.user.userId}).sort({createdAt:-1}).populate(`postId`)
+      const user = await Users.findById(req.user.userId);
+      if (user) {
+        user.hasNotification = false;
+        await user.save();
+      }
+      // res.status(200).json(notifications)
+      res.status(200).json({notifications : notifications})
+    }catch(error){
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+//mark notification as read
+
 module.exports = {
   post,
   getAllPosts,
@@ -187,4 +241,5 @@ module.exports = {
   unLikePost,
   addReplyToPost,
   getReply,
+  getNotifications,
 };

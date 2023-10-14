@@ -24,6 +24,7 @@ const  Input: React.FC<InputsProps> = ({placeholder , value , type , disabled, o
     rounded-md
     outline-none
     text-white
+    dark:text-white
     focus:border-sky-500
     focus:border-2
     transition

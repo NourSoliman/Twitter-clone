@@ -79,7 +79,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, a
               rounded-t
               "
             >
-              <h3 className="text-3xl font-semibold text-white">
+              <h3 className="text-3xl font-semibold text-black dark:text-white">
                 {title}
               </h3>
               <button

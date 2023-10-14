@@ -44,7 +44,7 @@ function TweetButton() {
         lg:block
         text-center
         font-semibold
-        text-white
+        text-white dark:text-white
         text-[20px]
         cursor-pointer
         '>Tweet</p>

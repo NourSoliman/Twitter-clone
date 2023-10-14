@@ -155,8 +155,8 @@ export const GetLoggedInUser = (userId : string)  => {
         try{
 
         const response = await fetch(`${serverUrl}/user/${userId}`)
-        const data = await response.json()
         if(response.ok){
+            const data = await response.json()
             dispatch({type:GET_LOGGED_IN_USER,
             payload:data
             })

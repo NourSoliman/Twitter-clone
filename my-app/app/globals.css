@@ -7,6 +7,9 @@ body,
 :root{
 height: 100vh;
 }
+.robotoText{
+  font-family: var(--font-roboto);
+}
 @layer base {
 
   :root {
@@ -71,7 +74,7 @@ height: 100vh;
     --ring: 212.7 26.8% 83.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;

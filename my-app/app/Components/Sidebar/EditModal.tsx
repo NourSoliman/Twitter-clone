@@ -20,20 +20,17 @@ const  EditModal = () => {
     const [bio , setBio] = useState(user?.bio || '')
     const token: any = Cookies.get(`token`)
     const decode: { userId: string } = jwt_decode(token);
-    const currentUser = decode.userId;
+    const currentUser = token ? decode?.userId : ``;
     const isEditFormOpen = useSelector((state:RootState)=>state.dialog.isEditFormOpen)
     const handleCloseEditForm = () =>{
         dispatch(CloseEditForm())
     }
-    // const onSubmit = () =>{
-    //     console.log(`submiteed`)
-    // }
     useEffect(()=>{
         setProfileImage(user?.profileImage)
         setCoverImage(user?.coverImage)
         setFirstName(user?.firstName)
         setBio(user?.bio)
-    },[user])
+    },[user?.profileImage, user?.coverImage, user?.firstName, user?.bio])
     const onSubmit = useCallback( async ()=>{
       const updatedFields = {
         firstName : firstName,
@@ -47,7 +44,7 @@ const  EditModal = () => {
       toast.success(`Updated`)
     },[dispatch , firstName , bio , profileImage , coverImage , user , currentUser , router])
     const ContentBody = (
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 '>
         <ImageUploadModal value={profileImage} onChange={((image) => setProfileImage(image))} label="Upload Profile Image"/>
         <ImageUploadModal value={coverImage} onChange={((image) => setCoverImage(image))} label="Upload Cover Image"/>
         <Input placeholder='First Name' value={firstName} type="text" onChange={(e) => setFirstName(e.target.value)}/>

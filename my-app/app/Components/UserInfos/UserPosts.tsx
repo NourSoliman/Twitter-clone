@@ -25,17 +25,15 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
   const currentUser = decode?.userId;
   // const { posts } = useSelector((state: RootState) => state.posts);
   const userPosts  = useSelector((state: RootState) => state.posts.userPosts) as []
-  console.log(userPosts , `userPosts!`)
   useEffect(() => {
+    
     dispatch(GetAllUserPosts(userId, page) as any);
   }, [dispatch, userId, page]);
   const { user } = useSelector((state: RootState) => state.user) as any;
-  // console.log(user ,`userdata`)
   const userFirstName = user?.firstName;
   const userLastName = user?.lastName;
   const handleLike = useCallback(
     async (postId: any) => {
-      console.log(`LIKEDDDDDD111`)
       try {
         await dispatch(LikeProfilePost(postId) as any);
       } catch (error) {
@@ -65,9 +63,9 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
     <div>
       {userPosts?.map((post: any) => (
         // <div>
-        //     <p className='text-white'>{post.body}</p>
+        //     <p className='text-black dark:text-white'>{post.body}</p>
         // </div>
-        <div className="text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-800" key={post?._id}>
+        <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800" key={post?._id}>
           <PostAvatar userId={post?.userId} />
           <div className="flex flex-col">
             <div className="flex flex-row items-center gap-2 cursor-pointer">
@@ -80,7 +78,7 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
               </p>
             </div>
             <div>
-              <p className="text-white">{post?.body}</p>
+              <p className="text-black dark:text-white">{post?.body}</p>
             </div>
             <div className="flex flex-row items-center mt-3 gap-10">
               <div className="flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500" onClick={() => goToPost( event,  post?._id)}>

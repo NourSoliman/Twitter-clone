@@ -24,15 +24,19 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       if (!process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET is not defined');
       }
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken | undefined;
-  
-      if (!decoded) {
-        return res.status(401).json({ error: 'Token verification failed' });
+      if (token) {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken | undefined;
+    
+        if (!decoded) {
+          return res.status(401).json({ error: 'Token verification failed' });
+        }
+    
+        req.user = decoded;
+        console.log('req.user:', req.user);
+        next();
+      } else {
+        return res.status(401).json({ error: 'No token provided' });
       }
-  
-      req.user = decoded;
-      console.log('req.user:', req.user);
-      next();
     } catch (error) {
       console.error(error);
       res.status(401).json({ error: 'Authentication Failed' });

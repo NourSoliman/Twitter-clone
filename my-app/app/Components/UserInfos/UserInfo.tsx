@@ -17,7 +17,7 @@ interface User {
 const UserInfo :React.FC<userInfoProps> = ({userId , user}) => {
 
   return (
-        <div className='bg-neutral-700 h-44 relative'>
+        <div className='bg-neutral-300 dark:bg-neutral-700 h-44 relative'>
         {user?.coverImage && (
             <Image
             src={user.coverImage}

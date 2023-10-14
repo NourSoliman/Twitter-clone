@@ -4,7 +4,7 @@ import {
     GET_USER_POSTS_SUCCESS, GET_USER_SINGLE_PAGE_FAIL, GET_USER_SINGLE_PAGE_FIRST,
     GET_USER_SINGLE_PAGE_SUCCESS, LIKE_USER_POST, UNLIKE_USER_POST,
     USER_POSTS_LIKE, USER_POSTS_UNLIKE, SINGLE_PAGE_LIKE, SINGLE_PAGE_UNLIKE,
-    ADD_REPLY_TO_POST_FAIL , ADD_REPLY_TO_POST_SUCCESS , GET_REPlY_POST_SUCCESS
+    ADD_REPLY_TO_POST_FAIL , ADD_REPLY_TO_POST_SUCCESS , GET_REPlY_POST_SUCCESS,GET_NOTIFICATIONS_SUCCESS
 } from './types'
 //FIRST//////////////////////////////////////////////////////////
 interface AddPostFirst {
@@ -116,7 +116,7 @@ export interface SinglePageUnLikeAction {
 export interface AddReplySuccess{
     type:typeof ADD_REPLY_TO_POST_SUCCESS;
     payload:{
-        postReplyComments:string[],
+        postReplyComments:[],
     }
     message:string,
     isLoading:boolean,
@@ -124,8 +124,16 @@ export interface AddReplySuccess{
 interface GetReplyPost{
     type:typeof GET_REPlY_POST_SUCCESS,
     payload:{
-        postReplyComments:string[],
+        postReplyComments:[],
     }
+    message:string,
+    isLoading:boolean,
+}
+interface GetNotifications {
+    type:typeof GET_NOTIFICATIONS_SUCCESS,
+    payload:{
+        notifications:[],
+    },
     message:string,
     isLoading:boolean,
 }
@@ -189,14 +197,15 @@ interface initState {
     userPosts: [],
     singlePost: SinglePost,
     postReplyComments:[];
+    notifications:[],
 }
 const initialState: initState = {
     posts: [],
     userPosts: [],
-    error: "",
+    error: "",  
     message: "",
     isLoading: false,
-    singlePost: {
+    singlePost: {   
         _id: "", 
         body: "",
         userId: "",
@@ -205,11 +214,12 @@ const initialState: initState = {
         comments: [],
     },
     postReplyComments:[],
+    notifications:[],
 }
 type ActionTypes = AddPostSuccess | AddPostFirst | AddPostFail | GetPostFail
     | GetPostFirst | GetPostSuccess | GetUserPostFail | GetUserPostFirst | GetUserPostSuccess |
     GetPostSingleFirst | GetPostSingleFail | GetPostSingleSuccess | LikePost | UnlikePost | ProfilePostLike
-    | ProfilePostUnLike | SinglePageLikeAction | SinglePageUnLikeAction | AddReplySuccess | GetReplyPost
+    | ProfilePostUnLike | SinglePageLikeAction | SinglePageUnLikeAction | AddReplySuccess | GetReplyPost | GetNotifications
 const PostsReducer = (state = initialState, action: ActionTypes) => {
     switch (action.type) {
         case ADD_POST_FIRST:
@@ -304,7 +314,7 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                 userPosts: state.userPosts.map((post, index) =>
                     index === profilePostsLike ? action.payload : post
                 ),
-                message: action.payload.message,
+                message: action.payload.message,    
                 isLoading: false,
             };
 
@@ -359,17 +369,26 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                         };
                     }
                 }
-            case ADD_REPLY_TO_POST_SUCCESS:
-                return{
-                    ...state,
-                    postReplyComments:action.payload,
-                    isLoading:false,
-                }
+                case ADD_REPLY_TO_POST_SUCCESS:
+                    const newReply = action.payload;
+
+                    console.log([...state.postReplyComments,newReply] , `...state.postReplyComments,newReply`)
+                    return{
+                        ...state,
+                        postReplyComments: [...state.postReplyComments, newReply],
+                        isLoading:false,
+                    }
             case GET_REPlY_POST_SUCCESS:
                 return{
                 ...state,
                 postReplyComments:action.payload,
                 isLoading:false,
+                }
+            case GET_NOTIFICATIONS_SUCCESS:
+                return{
+                    ...state,
+                    notifications:action.payload.notifications,
+                    isLoading:false,
                 }
         case ADD_POST_FAIL:
             return {

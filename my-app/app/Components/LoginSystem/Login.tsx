@@ -6,7 +6,6 @@ import { useSelector , useDispatch ,  } from 'react-redux'
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
 import { closeDialog , OpenRegisterForm } from '@/app/Redux/dialog/Actions'
 import { loginAction } from '@/app/Redux/Login/Action'
-import Cookies from "js-cookie";
 import { setCookie } from 'nookies';
 
 function Login() {
@@ -31,14 +30,7 @@ function Login() {
             const response = await dispatch(loginAction(userData) as any)
             console.log(response , `response from frntenddsadsa`);
             
-            // if(response && response.token) {
-            //     const token = response.token
-            //     Cookies.set(`token`,token)
-            //     console.log(token , `token`);
-            //     // Refresh the page after successful login
-            //     window.location.reload();
-                
-            // }
+
             if (response && response.token) {
                 const token = response.token;
           

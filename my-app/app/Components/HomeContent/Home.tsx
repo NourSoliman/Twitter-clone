@@ -1,14 +1,12 @@
 "use client"
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
-import React , {useCallback, useEffect, useState} from 'react'
+import React , { useEffect, useState} from 'react'
 import { useSelector , useDispatch } from 'react-redux'
-import { GetAllPosts, GetAllUserPosts, LikePost } from '@/app/Redux/Posts/actions'
+import { GetAllPosts } from '@/app/Redux/Posts/actions'
 import Cookies from 'js-cookie'
 import jwt_decode from 'jwt-decode'
 import PostItem from './PostItem'
-import Avatar from '../Sidebar/Avatar'
-import { fetchAllUsers, GetLoggedInUser, GetUserData, GetUserProfileImage } from '@/app/Redux/Login/Action'
-import Button from '../Buttons/Button'
+import {  GetLoggedInUser } from '@/app/Redux/Login/Action'
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface userPosts {
@@ -19,14 +17,14 @@ const UserPosts : React.FC<userPosts> = () => {
     const [page , setPage] = useState(1)
     const token: string | undefined = Cookies.get('token') || ''; 
     const decode: { userId: string } | null = token ? jwt_decode(token) : null;
-    const currentUser = decode?.userId || '';
+    const currentUser = token ? decode?.userId || '' : ``;
     const { user } = useSelector((state: RootState) => state.user) as any;
     const {posts} = useSelector((state:RootState) => state.posts)
-  console.log(posts , `this posts comes from HOMEMMEME`)
+    const {isLoading} = useSelector((state:RootState)=>state.posts)
+
 
 
     useEffect(()=>{
-      console.log(`fetched all data again!`)
       dispatch(GetAllPosts(page) as any)
       dispatch(GetLoggedInUser(currentUser) as any)
     },[dispatch , page ])
@@ -38,8 +36,6 @@ const UserPosts : React.FC<userPosts> = () => {
 
   return (
     <div>
-
-
     <InfiniteScroll
     dataLength={posts?.length} 
     next={fetchMorePosts}
@@ -47,10 +43,10 @@ const UserPosts : React.FC<userPosts> = () => {
     loader={<h4>Loading...</h4>} 
 >
         {posts?.map((post : Record<string , any>)=>(
-            <PostItem userId={currentUser} post={post}  key={post._id} page={page} user={user} />
+            <PostItem userId={currentUser} post={post}  key={post._id} page={page} user={user} isLoading={isLoading} />
         ))}
     </InfiniteScroll>
-        <button onClick={fetchMorePosts} className="text-white">CLICK ME</button>
+        {/* <button onClick={fetchMorePosts} className="text-white">CLICK ME</button> */}
         </div>
   )
 }

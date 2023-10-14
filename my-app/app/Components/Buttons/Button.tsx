@@ -1,4 +1,4 @@
-'use client'
+
 import React from 'react'
 interface ButtonProps{
     label:string,
@@ -8,8 +8,9 @@ interface ButtonProps{
     onClick:()=>void,
     disabled?:boolean,
     outline?:boolean,
+    theme?:string,
 }
-const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large, onClick , disabled , outline}) => {
+const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large, onClick , disabled , outline , theme}) => {
   return (
         <button
         disabled={disabled}
@@ -28,7 +29,7 @@ const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large,
         ${large? `text-xl` : `text-md`}
         ${large ? `px-5` : `px-4`}
         ${large ? `py-3` : `py-2`}
-        ${outline ? `bg-transparent` : ``}
+        ${outline ? theme === `dark` ? `bg:transperant` : `bg:black` : ``}
         ${outline ? `border-white` : ``}
         ${outline ? `text-white` : ``}
         `}
