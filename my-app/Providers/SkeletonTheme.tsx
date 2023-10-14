@@ -9,14 +9,13 @@ interface childrenProp {
 }
 const SkeletonProvider : React.FC<childrenProp> = ({children}) => {
   const [mounted , setMounted] = useState(false)
+  const {resolvedTheme} = useTheme()
   useEffect(()=>{
     setMounted(true)
   },[])
   if(!mounted){
     return null
   }
-  const {resolvedTheme} = useTheme()
-    console.log(resolvedTheme ,`resolvedTheme from skeleton`)
   return (
     <SkeletonTheme baseColor={resolvedTheme === `dark` ?  `#202020` : `#ebebeb`}>
         {children}

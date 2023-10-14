@@ -71,7 +71,7 @@ interface LikePost {
 interface UnlikePost {
     type: typeof UNLIKE_USER_POST,
     payload: {
-        posts: [],
+        posts: mainPost[],
         message: string,
         _id: string,
     }
@@ -200,7 +200,7 @@ interface initState {
     notifications:[],
 }
 const initialState: initState = {
-    posts: [],
+    posts:[],
     userPosts: [],
     error: "",  
     message: "",
@@ -238,14 +238,9 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                 isLoading: false,
             }
         case GET_POST_SUCCESS:
-            console.log(action.payload, `action.payload.postssss`)
-            const newPosts = action.payload.filter((newPost: mainPost) => {
+            const newPosts = action.payload.posts.filter((newPost: mainPost) => {
                 return !state.posts || !state.posts.some((existPosts) => existPosts._id === newPost._id)
             })
-
-            console.log(newPosts, `this new posts from redux`)
-            // console.log(state.posts , `dey el state.posts`)
-            // console.log([...state.posts , ...newPosts] , `DEY ARRAAAAAAAAAY`)
             return {
                 ...state,
                 // posts: newPosts,

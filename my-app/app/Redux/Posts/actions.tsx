@@ -54,7 +54,7 @@ export const GetAllPosts = (page: number) => {
                 const data = await response.json()
                 dispatch({
                     type: GET_POST_SUCCESS,
-                    payload: data.posts,
+                    payload: data,
                 })
                 console.log(data, `this data coming from get all posts!!!`)
             } else {
