@@ -10,7 +10,7 @@ async function register(req: Request, res: Response, next: NextFunction) {
         const existEmail = await Users.findOne({ email });
         const existfirstName = await Users.findOne({ firstName })
         if (existfirstName) {
-            return res.status(400).json({ error: `This Email Already exist` })
+            return res.status(400).json({ error: `This FirstName Already exist please use another one :]` })
         }
         // Check if email already exists
         if (existEmail) {

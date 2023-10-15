@@ -38,25 +38,28 @@ export const registerAction = (userData : UserData) => {
         })
         if(response.ok){
         const data = await response.json()
-        console.log(data , `dsadasdad`)
         dispatch({
             type:REGISTER_SUCCESS,
             payload:{
                 user:data.user,
-                message:data.message
+                message:data.message,
+                error:data.error,
             }
         })
         return data
         } else {
-            const errorData = await response.json()
-            throw new Error(errorData.error)
+            const errorData = await response.json();
+            console.log(errorData , `this data from login action`)
+            dispatch({
+            type: REGISTER_FAIL,
+            payload: {
+                error: errorData.error, 
+            },
+            });
+            throw new Error(errorData.error);
         }
         }catch(error){
             console.log(error)
-            dispatch({
-                type:REGISTER_FAIL,
-                error:`An error occurred while creating new account.`
-            })
         }
     }
 }
@@ -163,6 +166,7 @@ export const GetLoggedInUser = (userId : string)  => {
             })
         } else{
             const ErrorData = await response.json()
+            console.log(ErrorData)
             throw new Error(ErrorData.error)
         }
         }catch(error){

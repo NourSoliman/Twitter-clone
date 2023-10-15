@@ -7,24 +7,27 @@ import { useSelector , useDispatch } from 'react-redux'
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
 import { CloseRegisterForm , openDialog } from '@/app/Redux/dialog/Actions'
 import { registerAction } from '@/app/Redux/Login/Action'
+import LoadingIndicator from './loading'
 const Register = () => {
     const [firstName , setFirstName] = useState(``)
     const [lastName , setLastName] = useState(``)
     const [email , setEmail] = useState(``)
     const [password , setPassword] = useState(``)
     const [confirmPassword , setConfirmPassword] = useState(``)
-    const [isLoading , setIsLoading] = useState(false)
+    // const [isLoading , setIsLoading] = useState(false)
     const {isRegisterFormOpen} = useSelector((state : RootState)=>state.dialog)
+    const {error , isLoading , message} = useSelector((state : RootState)=>state.user)
+    const dispatch = useDispatch()
+    console.log(error , `erro from register`)
+    console.log(message , `erro from register`)
     const handleSignInLink = () => {
     dispatch(openDialog())
     dispatch(CloseRegisterForm())
     }
-    const dispatch = useDispatch()
     const closeRegisterForm = () =>{
         dispatch(CloseRegisterForm())
     }
     const handleOnSubmit =  () => {
-        // e.preventDefault();
         const userData = {
         firstName,
         email,
@@ -33,15 +36,36 @@ const Register = () => {
         lastName,
         };
         dispatch(registerAction(userData) as any);
+        //show error if exist
+        if (error && typeof error === 'string') {
+            return;
+          }
+      
         //reset form after success register
-        setFirstName(``)
-        setLastName(``)
-        setEmail(``)
-        setPassword(``)
-        setConfirmPassword(``)
+            setFirstName(``)
+            setLastName(``)
+            setEmail(``)
+            setPassword(``)
+            setConfirmPassword(``)
+
     };
+    if(isLoading){
+        return(
+            <LoadingIndicator />
+        )
+    }
     const bodyContent = (
         <div className="flex flex-col gap-4">
+            {message && typeof message === `string` &&(
+            <div className='text-green-500'>
+            {message}
+            </div>
+            )}
+            {error && typeof error === 'string' && (
+            <div className='text-red-500'>
+                {error}
+            </div>
+            )}
             <Input placeholder='FirstName'
             onChange={(e)=>setFirstName(e.target.value)}
             value={firstName}

@@ -26,7 +26,9 @@ const UserPosts : React.FC<userPosts> = () => {
 
     useEffect(()=>{
       dispatch(GetAllPosts(page) as any)
-      dispatch(GetLoggedInUser(currentUser) as any)
+      if(token){
+        dispatch(GetLoggedInUser(currentUser) as any)
+      }
     },[dispatch , page ])
 
     const fetchMorePosts = () => {

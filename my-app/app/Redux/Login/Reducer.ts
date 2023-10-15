@@ -2,7 +2,7 @@ import {
     REGISTER_FIRST, REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_FIRST, LOGIN_SUCCESS,
     LOGOUT_FAIL, LOGOUT_FIRST, LOGOUT_SUCCESS, ALL_FAIL, ALL_FIRST, ALL_SUCCESS, IMAGES_SUCCESS,
     GET_USER_DATA_FAIL, GET_USER_DATA_FIRST, GET_USER_DATA_SUCCESS, CHANGE_BIO_FAIL, CHANGE_BIO_FIRST,
-    CHANGE_BIO_SUCCESS, GET_PROFILE_IMAGE_SUCCESS,FOLLOW_SOMEONE,GET_LOGGED_IN_USER , UN_FOLLOW_SOMEONE
+    CHANGE_BIO_SUCCESS, GET_PROFILE_IMAGE_SUCCESS, FOLLOW_SOMEONE, GET_LOGGED_IN_USER, UN_FOLLOW_SOMEONE
 } from "./Types";
 //FIRST TYPES///////////////////////////
 interface RegisterFirst {
@@ -46,13 +46,13 @@ interface LogoutSuccess {
     }
     isLoading: boolean,
     isLoggedIn: boolean,
-
 }
 interface RegisterSuccess {
     type: typeof REGISTER_SUCCESS,
     payload: {
         user: object,
-        message: string
+        error: string,
+        message: string,
     }
     isLoading: boolean
 }
@@ -61,14 +61,14 @@ interface GetProfileImageSuccess {
     payload: {
         userId: string,
         ProfileImage: string,
-        firstName:string,
-        lastName:string,
+        firstName: string,
+        lastName: string,
     }
 }
 export interface Username {
-    [key:string]:{
-        firstName:string,
-        lastName:string,
+    [key: string]: {
+        firstName: string,
+        lastName: string,
     },
 }
 export interface User {
@@ -104,20 +104,20 @@ interface ChangeProfileBioSuccess {
     payload: User,
     isLoading: boolean,
 }
-interface FollowSomeone{
-    type:typeof FOLLOW_SOMEONE,
-    payload:User,
-    isLoading:boolean,
+interface FollowSomeone {
+    type: typeof FOLLOW_SOMEONE,
+    payload: User,
+    isLoading: boolean,
 }
 interface UnFollow {
-    type:typeof UN_FOLLOW_SOMEONE,
-    payload:User,
-    isLoading:boolean,
+    type: typeof UN_FOLLOW_SOMEONE,
+    payload: User,
+    isLoading: boolean,
 }
 interface GetLoggedUser {
-    type:typeof GET_LOGGED_IN_USER,
-    payload:User,
-    isLoading:boolean,
+    type: typeof GET_LOGGED_IN_USER,
+    payload: User,
+    isLoading: boolean,
 }
 ///////////////////FAIL TYPEs////////////////////////////////////////
 interface RegisterFail {
@@ -173,7 +173,7 @@ interface intiState {
     error: string,
     users: User[],
     ProfileImage: object,
-    loggedUser : object,
+    loggedUser: object,
 }
 const initialState: intiState = {
     isLoading: false,
@@ -183,8 +183,8 @@ const initialState: intiState = {
     error: "",
     isLoggedIn: false,
     ProfileImage: {},
-    loggedUser:{
-        firstName: '',      
+    loggedUser: {
+        firstName: '',
         lastName: '',
         email: '',
         profileImage: '',
@@ -210,7 +210,7 @@ const loginReducer = (state = initialState, action: actionTypes) => {
             return {
                 ...state,
                 user: action.payload,
-                message: action.payload,
+                message: action.payload.message,
                 isLoading: false,
             }
         case LOGIN_SUCCESS:
@@ -247,48 +247,48 @@ const loginReducer = (state = initialState, action: actionTypes) => {
                 user: action.payload,
                 isLoading: false,
             }
-            case GET_PROFILE_IMAGE_SUCCESS:
-                return {
-                    ...state,
-                    ProfileImage: {
-                        ...state.ProfileImage,
-                        [action.payload.userId]: action.payload.ProfileImage,
+        case GET_PROFILE_IMAGE_SUCCESS:
+            return {
+                ...state,
+                ProfileImage: {
+                    ...state.ProfileImage,
+                    [action.payload.userId]: action.payload.ProfileImage,
+                },
+                // Include firstName and lastName in the user object
+                user: {
+                    ...state.user,
+                    [action.payload.userId]: {
+                        firstName: action.payload.firstName,
+                        lastName: action.payload.lastName,
                     },
-                    // Include firstName and lastName in the user object
-                    user: {
-                        ...state.user,
-                        [action.payload.userId]: {
-                            firstName: action.payload.firstName,
-                            lastName: action.payload.lastName,
-                        },
-                    },
-                };
-            case GET_LOGGED_IN_USER:
-                return{
-                    ...state,
-                    loggedUser:action.payload,
-                    isLoading:false,
-                }
-            case FOLLOW_SOMEONE:
-                return{
-                    ...state,
-                    // user:action.payload,
-                    loggedUser:{
+                },
+            };
+        case GET_LOGGED_IN_USER:
+            return {
+                ...state,
+                loggedUser: action.payload,
+                isLoading: false,
+            }
+        case FOLLOW_SOMEONE:
+            return {
+                ...state,
+                // user:action.payload,
+                loggedUser: {
                     ...state.loggedUser,
-                    isFollowing:true,
-                    },
-                    isLoading:false,
-                }
-            case UN_FOLLOW_SOMEONE:
-                return{
-                    ...state,
-                    // user:action.payload,
-                    loggedUser:{
-                        ...state.loggedUser,
-                        isFollowing:false,
-                        },
-                    isLoading:false
-                }
+                    isFollowing: true,
+                },
+                isLoading: false,
+            }
+        case UN_FOLLOW_SOMEONE:
+            return {
+                ...state,
+                // user:action.payload,
+                loggedUser: {
+                    ...state.loggedUser,
+                    isFollowing: false,
+                },
+                isLoading: false
+            }
         case LOGIN_FAIL:
             // const {error} = action.payload
             return {
@@ -299,9 +299,9 @@ const loginReducer = (state = initialState, action: actionTypes) => {
         case REGISTER_FAIL:
             return {
                 ...state,
-                error: `ERROR ROROROROROR`,
+                error: action.payload.error,
                 isLoading: false,
-            }
+            };
         case LOGOUT_FAIL:
             return {
                 ...state,

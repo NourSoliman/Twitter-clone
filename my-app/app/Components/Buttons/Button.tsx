@@ -9,8 +9,9 @@ interface ButtonProps{
     disabled?:boolean,
     outline?:boolean,
     theme?:string,
+    type?:string,
 }
-const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large, onClick , disabled , outline , theme}) => {
+const  Button : React.FC<ButtonProps> = ({label , secondary , fullWidth , large, onClick , disabled , outline , theme , type}) => {
   return (
         <button
         disabled={disabled}

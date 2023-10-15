@@ -10,6 +10,18 @@ height: 100vh;
 .robotoText{
   font-family: var(--font-roboto);
 }
+.animate-loading-line {
+  animation: loading-line 2s linear infinite;
+}
+
+@keyframes loading-line {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
 @layer base {
 
   :root {
