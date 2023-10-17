@@ -25,6 +25,7 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState(``);
   const [page, setPage] = useState(1);
+  const [showFullText, setShowFullText] = useState(false);
 
   const token: any = Cookies.get(`token`) || null;
   const decode: { userId: string } = jwt_decode(token) || null;
@@ -83,6 +84,17 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
   const handleDelete = (postId : string) => {
     openConfirmationDialog(postId);
   };
+  //split post on lines
+  function splitTextIntoLines(text : string, lineLength = 50) {
+    const lines = [];
+    for (let i = 0; i < text.length; i += lineLength) {
+      lines.push(text.slice(i, i + lineLength));
+    }
+    return lines;
+  }
+  const toggleShowText = () => {
+    setShowFullText((prevShowFullText) => !prevShowFullText);
+  };
   return (
     <div>
       {userPosts?.map((post: any) => (
@@ -99,7 +111,23 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
               </p>
             </div>
             <div>
-              <p className="text-black dark:text-white">{post?.body}</p>
+              {splitTextIntoLines(showFullText ? post?.body : post?.body.slice(0, 100)).map((line, index) => (
+                <p
+                  key={index}
+                  className="text-black dark:text-white"
+                  style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
+                >
+                  {line}
+                </p>
+              ))}
+              {post?.body.length > 100 && (
+                <button
+                  className="text-blue-500 hover:underline block ml-2"
+                  onClick={toggleShowText}
+                >
+                  {showFullText ? "Show Less" : "Show More"}
+                </button>
+              )}
             </div>
             <div className="flex flex-row items-center mt-3 gap-10">
               <div className="flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500" onClick={() => goToPost(event, post?._id)}>
