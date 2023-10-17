@@ -3,6 +3,8 @@ import Users from "../Models/Users";
 import Comments from "../Models/Comments"
 import Notifications from '../Models/Notifications'
 import { Request, Response } from "express";
+const mongoose = require('mongoose');
+
 //POST REQUEST TO CREATE POST
 async function post(req: Request, res: Response) {
   try {
@@ -206,7 +208,6 @@ async function getReply(req: Request, res: Response){
   
 
       const comments = post.comments;
-      // console.log(comments , `comments`)
   
       return res.status(200).json({ comments });
     } catch (error) {
@@ -230,7 +231,72 @@ async function getReply(req: Request, res: Response){
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
-//mark notification as read
+//detele post
+// DELETE a post
+async function deletePost(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId; 
+    const { postId } = req.params;
+    console.log(postId )
+    
+    if (!postId) {
+      return res.status(400).json({ error: "Post ID is required." });
+    }
+
+    // Remove the post
+    const deletedPost = await Posts.findByIdAndRemove(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    // Remove the post ID from the user's posts array
+    await Users.findByIdAndUpdate(userId, { $pull: { posts: postId } });
+
+    res.status(200).json({ message: "Post deleted successfully" , deletedPost });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+async function deleteReply(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId;
+    const { commentId , postId } = req.params; 
+
+
+    if (!postId || !commentId) {
+      return res.status(400).json({ error: "Post ID and Comment ID are required." });
+    }
+
+    const commentObjectId = new mongoose.Types.ObjectId(commentId);
+
+    const post = await Posts.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found." });
+    }
+
+    // Check if the comment exists in the post's comments array
+    const commentIndex = post.comments.findIndex((comment) => comment.equals(commentObjectId));
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ error: "Comment not found in the post." });
+    }
+
+    post.comments.splice(commentIndex, 1);
+    await post.save();
+
+    // Remove the comment from the Comments collection
+    await Comments.findByIdAndRemove(commentObjectId);
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 module.exports = {
   post,
@@ -242,4 +308,6 @@ module.exports = {
   addReplyToPost,
   getReply,
   getNotifications,
+  deletePost,
+  deleteReply,
 };

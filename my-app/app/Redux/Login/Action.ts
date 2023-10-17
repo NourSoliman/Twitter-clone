@@ -49,7 +49,6 @@ export const registerAction = (userData : UserData) => {
         return data
         } else {
             const errorData = await response.json();
-            console.log(errorData , `this data from login action`)
             dispatch({
             type: REGISTER_FAIL,
             payload: {
@@ -75,9 +74,8 @@ export const loginAction = (userData : UserLogin) => {
                 },
                 body:JSON.stringify(userData)
             })
-            const data = await response.json()
-            console.log(data ,` dasdasdas`)
             if(response.ok){
+                const data = await response.json()
                 dispatch({
                     type:LOGIN_SUCCESS,
                     payload:{
@@ -86,17 +84,19 @@ export const loginAction = (userData : UserLogin) => {
                         isLoggedIn:true,
                     }
                 })
+                return data
             }else{
-                const ErrorData = await response.json()
-                throw new Error(ErrorData.error)
+                const errorData = await response.json();
+                dispatch({
+                type: LOGIN_FAIL,
+                payload: {
+                    error: errorData.error, 
+                },
+                });
+                throw new Error(errorData.error);
             }
-            return data
         }catch(error){
             console.log(error)
-            dispatch({
-                type:LOGIN_FAIL,
-                error:`failed to login`
-            })
         }
     }
 }
@@ -119,9 +119,7 @@ export const fetchAllUsers = (page: number) =>{
     return async(dispatch : Dispatch)=>{
         try{ 
         dispatch({type:ALL_FIRST})
-        
-            console.log(page ,`page`)
-        const response = await fetch(`${serverUrl}/allusers/${page}`)
+                const response = await fetch(`${serverUrl}/allusers/${page}`)
         const data =await response.json()
 
             dispatch({type:ALL_SUCCESS,

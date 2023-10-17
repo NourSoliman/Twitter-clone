@@ -19,7 +19,7 @@ const  Header: React.FC<HeaderLabelProps> = ({label , showBackArrow , theme}) =>
             showBackArrow && (
                 <BiArrowBack 
                 onClick={ReturnBack}
-                color={theme === `dark` ? `white` : `black`}
+                color={theme === `dark` ? `green` : `green`}
                 size={20}
                 className="
                 cursor-pointer

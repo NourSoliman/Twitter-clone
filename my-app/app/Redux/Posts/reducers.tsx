@@ -4,7 +4,8 @@ import {
     GET_USER_POSTS_SUCCESS, GET_USER_SINGLE_PAGE_FAIL, GET_USER_SINGLE_PAGE_FIRST,
     GET_USER_SINGLE_PAGE_SUCCESS, LIKE_USER_POST, UNLIKE_USER_POST,
     USER_POSTS_LIKE, USER_POSTS_UNLIKE, SINGLE_PAGE_LIKE, SINGLE_PAGE_UNLIKE,
-    ADD_REPLY_TO_POST_FAIL , ADD_REPLY_TO_POST_SUCCESS , GET_REPlY_POST_SUCCESS,GET_NOTIFICATIONS_SUCCESS
+    ADD_REPLY_TO_POST_FAIL, ADD_REPLY_TO_POST_SUCCESS, GET_REPlY_POST_SUCCESS, GET_NOTIFICATIONS_SUCCESS,
+     DELETE_POST, DELETE_USER_POST,DELETE_COMMENT_POST
 } from './types'
 //FIRST//////////////////////////////////////////////////////////
 interface AddPostFirst {
@@ -113,29 +114,48 @@ export interface SinglePageUnLikeAction {
     };
     isLoading: boolean;
 }
-export interface AddReplySuccess{
-    type:typeof ADD_REPLY_TO_POST_SUCCESS;
-    payload:{
-        postReplyComments:[],
+export interface AddReplySuccess {
+    type: typeof ADD_REPLY_TO_POST_SUCCESS;
+    payload: {
+        postReplyComments: [],
     }
-    message:string,
-    isLoading:boolean,
+    message: string,
+    isLoading: boolean,
 }
-interface GetReplyPost{
-    type:typeof GET_REPlY_POST_SUCCESS,
-    payload:{
-        postReplyComments:[],
+interface GetReplyPost {
+    type: typeof GET_REPlY_POST_SUCCESS,
+    payload: {
+        postReplyComments: [],
     }
-    message:string,
-    isLoading:boolean,
+    message: string,
+    isLoading: boolean,
 }
 interface GetNotifications {
-    type:typeof GET_NOTIFICATIONS_SUCCESS,
-    payload:{
-        notifications:[],
+    type: typeof GET_NOTIFICATIONS_SUCCESS,
+    payload: {
+        notifications: [],
     },
-    message:string,
-    isLoading:boolean,
+    message: string,
+    isLoading: boolean,
+}
+interface Delete {
+    type: typeof DELETE_POST,
+    payload: {
+        postId: string,
+    },
+}
+interface DeleteUserPost {
+    type: typeof DELETE_USER_POST,
+    payload: {
+        userPostId: string,
+    }
+}
+interface DeleteComment {
+    type:typeof DELETE_COMMENT_POST,
+    payload:{
+        mainPostId:string,
+        commentId:string,
+    }
 }
 //FAIL//////////////////////////////////////////////////////////
 interface AddPostFail {
@@ -184,8 +204,8 @@ export interface SinglePost {
     comments: string[];
 }
 export interface CommentInterface {
-    userId:string,
-    body:string,
+    userId: string,
+    body: string,
     createdAt: string;
     _id: string;
 }
@@ -194,32 +214,33 @@ interface initState {
     error: string,
     message: string,
     isLoading: boolean,
-    userPosts: [],
+    userPosts: mainPost[],
     singlePost: SinglePost,
-    postReplyComments:[];
-    notifications:[],
+    postReplyComments: CommentInterface[];
+    notifications: [],
 }
 const initialState: initState = {
-    posts:[],
+    posts: [],
     userPosts: [],
-    error: "",  
+    error: "",
     message: "",
     isLoading: false,
-    singlePost: {   
-        _id: "", 
+    singlePost: {
+        _id: "",
         body: "",
         userId: "",
-        likedIds: [], 
-        createdAt:"",
+        likedIds: [],
+        createdAt: "",
         comments: [],
     },
-    postReplyComments:[],
-    notifications:[],
+    postReplyComments: [],
+    notifications: [],
 }
 type ActionTypes = AddPostSuccess | AddPostFirst | AddPostFail | GetPostFail
     | GetPostFirst | GetPostSuccess | GetUserPostFail | GetUserPostFirst | GetUserPostSuccess |
     GetPostSingleFirst | GetPostSingleFail | GetPostSingleSuccess | LikePost | UnlikePost | ProfilePostLike
-    | ProfilePostUnLike | SinglePageLikeAction | SinglePageUnLikeAction | AddReplySuccess | GetReplyPost | GetNotifications
+    | ProfilePostUnLike | SinglePageLikeAction | SinglePageUnLikeAction | AddReplySuccess | GetReplyPost |
+    GetNotifications | Delete | DeleteUserPost | DeleteComment
 const PostsReducer = (state = initialState, action: ActionTypes) => {
     switch (action.type) {
         case ADD_POST_FIRST:
@@ -243,8 +264,8 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
             })
             return {
                 ...state,
-                // posts: newPosts,
-                posts:[...state.posts , ...newPosts],
+                //checking if state.posts array or not if its not array it initialize as new array to concate with new posts 
+                posts: Array.isArray(state.posts) ? [...state.posts, ...newPosts] : [...newPosts],
                 message: action.payload,
                 isLoading: false,
             }
@@ -263,13 +284,6 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                 message: action.message,
                 isLoading: false,
             }
-        // case LIKE_USER_POST:
-        //     return{
-        //         ...state,
-        //         posts:action.payload.posts,
-        //         message:action.payload.message,
-        //         isLoading:false,
-        //     }
         case LIKE_USER_POST:
             // Find the index of the liked post in the current posts array
             const likedPostIndex = state.posts.findIndex(
@@ -302,14 +316,13 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
             const profilePostsLike = state.userPosts.findIndex(
                 (post: mainPost) => post._id === action.payload._id
             );
-            console.log(profilePostsLike, `profilePostsLike`)
             // Create a new state object with the updated post
             return {
                 ...state,
                 userPosts: state.userPosts.map((post, index) =>
                     index === profilePostsLike ? action.payload : post
                 ),
-                message: action.payload.message,    
+                message: action.payload.message,
                 isLoading: false,
             };
 
@@ -331,7 +344,7 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                 // Update the likedIds in the singlePost
                 const updatedSinglePost = {
                     ...state.singlePost,
-                    likedIds: [...state.singlePost.likedIds, action.payload.userId], 
+                    likedIds: [...state.singlePost.likedIds, action.payload.userId],
                 };
 
                 return {
@@ -342,49 +355,72 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
                 };
             }
 
-            case SINGLE_PAGE_UNLIKE:
-                // Check if the liked post is the singlePost
-                if (state.singlePost?._id === action.payload._id) {
-                    // Check if the user's ID is in the likedIds array
-                    if (state.singlePost.likedIds.includes(action.payload.userId)) {
-                        // Remove the user's ID from the likedIds array
-                        const updatedLikedIds = state.singlePost.likedIds.filter(
-                            (id) => id !== action.payload.userId
-                        );
-                        const updatedSinglePost = {
-                            ...state.singlePost,
-                            likedIds: updatedLikedIds,
-                        };
-            
-                        return {
-                            ...state,
-                            singlePost: updatedSinglePost,
-                            message: action.payload.message,
-                            isLoading: false,
-                        };
-                    }
-                }
-                case ADD_REPLY_TO_POST_SUCCESS:
-                    const newReply = action.payload;
+        case SINGLE_PAGE_UNLIKE:
+            // Check if the liked post is the singlePost
+            if (state.singlePost?._id === action.payload._id) {
+                // Check if the user's ID is in the likedIds array
+                if (state.singlePost.likedIds.includes(action.payload.userId)) {
+                    // Remove the user's ID from the likedIds array
+                    const updatedLikedIds = state.singlePost.likedIds.filter(
+                        (id) => id !== action.payload.userId
+                    );
+                    const updatedSinglePost = {
+                        ...state.singlePost,
+                        likedIds: updatedLikedIds,
+                    };
 
-                    console.log([...state.postReplyComments,newReply] , `...state.postReplyComments,newReply`)
-                    return{
+                    return {
                         ...state,
-                        postReplyComments: [...state.postReplyComments, newReply],
-                        isLoading:false,
-                    }
-            case GET_REPlY_POST_SUCCESS:
-                return{
+                        singlePost: updatedSinglePost,
+                        message: action.payload.message,
+                        isLoading: false,
+                    };
+                }
+            }
+        case ADD_REPLY_TO_POST_SUCCESS:
+            const newReply = action.payload;
+            return {
                 ...state,
-                postReplyComments:action.payload,
-                isLoading:false,
-                }
-            case GET_NOTIFICATIONS_SUCCESS:
-                return{
-                    ...state,
-                    notifications:action.payload.notifications,
-                    isLoading:false,
-                }
+                postReplyComments: [...state.postReplyComments, newReply],
+                isLoading: false,
+            }
+        case DELETE_POST:
+            const { postId } = action.payload
+            console.log(postId)
+            const updatedPosts = state.posts.filter((post) => post._id !== postId)
+            console.log(updatedPosts)
+            return {
+                ...state,
+                posts: updatedPosts,
+            }
+
+        case DELETE_USER_POST:
+            const { userPostId } = action.payload
+            const updatedUserPosts = state.userPosts.filter((post) => post._id !== userPostId)
+            return {
+                ...state,
+                userPosts: updatedUserPosts,
+            }
+        case DELETE_COMMENT_POST:
+            const { mainPostId, commentId } = action.payload;
+            const updatedComments = state.postReplyComments.filter(comment => comment._id !== commentId);
+            return {
+                ...state,
+                postReplyComments: updatedComments,
+                
+            };
+        case GET_REPlY_POST_SUCCESS:
+            return {
+                ...state,
+                postReplyComments: action.payload,
+                isLoading: false,
+            }
+        case GET_NOTIFICATIONS_SUCCESS:
+            return {
+                ...state,
+                notifications: action.payload.notifications,
+                isLoading: false,
+            }
         case ADD_POST_FAIL:
             return {
                 ...state,

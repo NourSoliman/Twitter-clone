@@ -32,8 +32,7 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
 
     if (clientToken) {
       // Decode the token to access its payload
-      const decodedToken: { userId: string } | undefined =
-        jwt_decode(clientToken);
+      const decodedToken: { userId: string } | undefined = jwt_decode(clientToken);
       const user = decodedToken?.userId || ``;
       // Set the userId state with the extracted value
       setUserId(user);
@@ -42,7 +41,6 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
   }, []);
 
   const onSubmit = useCallback(async () => {
-    console.log(`this comment`)
 
     try {
       await dispatch(addPost(userId, postContent) as any);

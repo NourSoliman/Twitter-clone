@@ -57,6 +57,10 @@
         followerIds:{
             type:Array,
         },
+        role:{
+            type:String,
+            default:`user`
+        },
         hasNotification:{
             type:Boolean,
         },

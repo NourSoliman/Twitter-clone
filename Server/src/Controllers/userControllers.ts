@@ -65,6 +65,7 @@ async function login(req: Request, res: Response) {
             userId: userEmail._id,
             followingIds:userEmail.followingIds,
             followerIds:userEmail.followerIds,
+            role:userEmail.role,
         },
             process.env.JWT_SECRET,
             { expiresIn: "24h" }

@@ -5,7 +5,10 @@ import {
     GET_USER_SINGLE_PAGE_SUCCESS, LIKE_USER_POST, UNLIKE_USER_POST, USER_POSTS_LIKE,
     USER_POSTS_UNLIKE, SINGLE_PAGE_LIKE, SINGLE_PAGE_UNLIKE, ADD_REPLY_TO_POST_SUCCESS,
     GET_REPlY_POST_SUCCESS,
-    GET_NOTIFICATIONS_SUCCESS
+    GET_NOTIFICATIONS_SUCCESS,
+    DELETE_POST,
+    DELETE_USER_POST,
+    DELETE_COMMENT_POST
 } from './types'
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
@@ -57,7 +60,6 @@ export const GetAllPosts = (page: number) => {
                     type: GET_POST_SUCCESS,
                     payload: data,
                 })
-                console.log(data, `this data coming from get all posts!!!`)
             } else {
                 const dataError = await response.json()
                 throw new Error(dataError)
@@ -288,7 +290,6 @@ export const SinglePageUnLike = (postId: string) => {
                 })
                 if (response.ok) {
                     const data = await response.json()
-                    console.log(data, `this data coming from reply`)
                     dispatch({
                         type: ADD_REPLY_TO_POST_SUCCESS,
                         payload: data.reply,
@@ -307,10 +308,8 @@ export const getReplyOnPosts = (postId: string) => {
     return async (dispatch: Dispatch) => {
         try {
             const response = await fetch(`${serverUrl}/posts/reply/${postId}`)
-            console.log(response, `this response coming from REPLY action`)
             if (response.ok) {
                 const data = await response.json()
-                console.log(data, `this data coming from reply`)
                 dispatch({
                     type: GET_REPlY_POST_SUCCESS,
                     payload: data.comments,
@@ -344,6 +343,87 @@ export const getNotifications = () => {
             } else {
                 const dataError = await response.json()
                 throw new Error(dataError)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+export const DeletePost = (postId : string) => {
+    return async (dispatch: Dispatch) => {
+        const token = getBearerToken()
+        try {
+            const response = await fetch(`${serverUrl}/deletePost/${postId}`,{
+                method:"DELETE",
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            
+            if (response.ok) {
+                const data = await response.json()
+                dispatch({
+                    type: DELETE_POST,
+                    payload: {postId : data.deletedPost._id},
+                })
+
+            } else {
+                const dataError = await response.json()
+                throw new Error(dataError.error)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+export const DeleteUserPost = (postId : string) => {
+    return async (dispatch: Dispatch) => {
+        const token = getBearerToken()
+        try {
+            const response = await fetch(`${serverUrl}/deletePost/${postId}`,{
+                method:"DELETE",
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            
+            if (response.ok) {
+                const data = await response.json()
+                dispatch({
+                    type: DELETE_USER_POST,
+                    payload: {userPostId : data.deletedPost._id},
+                })
+            } else {
+                const dataError = await response.json()
+                throw new Error(dataError.error)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+export const DeleteCommentFromPost = (postId : string , commentId : string) => {
+    return async (dispatch: Dispatch) => {
+        const token = getBearerToken()
+        try {
+            const response = await fetch(`${serverUrl}/deleteReply/${postId}/${commentId}`,{
+                method:"DELETE",
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            
+            if (response.ok) {
+                const data = await response.json()
+                dispatch({
+                    type: DELETE_COMMENT_POST,
+                    payload:{commentId}
+                })
+            } else {
+                const dataError = await response.json()
+                throw new Error(dataError.error)
             }
         } catch (error) {
             console.log(error)

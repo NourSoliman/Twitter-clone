@@ -1,13 +1,16 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback , useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNowStrict } from "date-fns";
 import PostAvatar from "./PostAvatar";
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
-import { LikePost, UnLikePost } from "@/app/Redux/Posts/actions";
+import { AiFillDelete, AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
+import { DeletePost, GetAllPosts, LikePost, UnLikePost } from "@/app/Redux/Posts/actions";
 import PostsLoading from "./loading";
 import { openDialog } from "@/app/Redux/dialog/Actions";
 import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
+import ConfirmationDialog from "../Modals/ConfirmationMessage";
+
 interface PostsProps {
   userId?: string;
   post?: any;
@@ -19,7 +22,13 @@ interface PostsProps {
 const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [showFullText, setShowFullText] = useState(false);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState(``);
+
   const token = Cookies.get(`token`) || ``
+  const decode: { userId: string } = token ? jwt_decode(token) || { userId: '' } : { userId: '' };
+  const currentUser = decode?.userId;
   //NAVIGATE TO POST USER PAGE
   const goToUser = useCallback(
     (event: any) => {
@@ -47,6 +56,9 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
 
   const likedPost = post?.likedIds?.includes(userId);
 
+  const toggleShowText = () => {
+    setShowFullText((prevShowFullText) => !prevShowFullText);
+  };
 
   const handleLike = useCallback(async () => {
     try {
@@ -63,6 +75,7 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       console.log(error)
     }
   }, [dispatch, post, page])
+
   const handlecreateAt = useMemo(() => {
     if (!post?.createdAt) {
       return null;
@@ -74,23 +87,65 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       <PostsLoading />
     )
   }
+  function splitTextIntoLines(text : string, lineLength = 50) {
+    const lines = [];
+    for (let i = 0; i < text.length; i += lineLength) {
+      lines.push(text.slice(i, i + lineLength));
+    }
+    return lines;
+  }
+  const postBody = showFullText ? post?.body : post?.body.slice(0, 100);
+  const handleConfirmDelete =  (postId : string) => {
+    dispatch(DeletePost(postId) as any)
+          closeConfirmationDialog()
+    }
+  
+    const openConfirmationDialog = (postId : string) => {
+      setPostIdToDelete(postId);
+      setIsConfirmationDialogOpen(true);
+    };
+  
+    const closeConfirmationDialog = () => {
+      setPostIdToDelete(``);
+      setIsConfirmationDialogOpen(false);
+    };
+  
+    const handleDelete = (postId : string) => {
+      openConfirmationDialog(postId);
+    };
   return (
-    <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800">
+    <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800 ">
       <PostAvatar userId={post?.userId} />
       <div className="flex flex-col">
         <div
-          className="flex flex-row items-center gap-2 cursor-pointer"
-          onClick={goToUser}
+          className="flex flex-row items-center justify-between gap-2 cursor-pointer "
+          
         >
+          <div className="flex flex-row gap-2">
           <p>{userFirstName}</p>
           <p className="text-neutral-400">@{userLastName}</p>
           <p className="text-neutral-400 text-sm">{handlecreateAt}</p>
+          </div>
         </div>
         <div>
-          <p className="text-black dark:text-white" onClick={goToUser}>
-            {post?.body}
+        {splitTextIntoLines(postBody).map((line, index) => (
+          <p
+            key={index}
+            className="text-black dark:text-white"
+            style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
+          >
+            {line}
           </p>
-        </div>
+        ))}
+        {post?.body.length > 100 && (
+          <button
+            className="text-blue-500 hover:underline block ml-2"
+            onClick={toggleShowText}
+          >
+            {showFullText ? "Show Less" : "Show More"}
+          </button>
+        )}
+      </div>
         <div className="flex flex-row items-center mt-3 gap-10">
           <div
             className="flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500"
@@ -108,12 +163,20 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
             ) : (
               <AiOutlineHeart size={20} />
             )}
-            {/* {likedPost?  <AiFillHeart size={20} color="red"/> : <AiOutlineHeart size={20} />} */}
-            {/* <AiOutlineHeart size={20} /> */}
             <p>{post?.likedIds?.length || 0}</p>
           </div>
         </div>
       </div>
+      <div className="flex items-end justify-end ml-auto">
+      {post?.userId === currentUser && 
+          <button className="hover:opacity-20 text-red-400 dark:text-red-700" onClick={()=> handleDelete(post?._id)}><AiFillDelete  size={30}/></button>
+          }
+      </div>
+      <ConfirmationDialog
+        isOpen={isConfirmationDialogOpen}
+        onConfirm={()=>handleConfirmDelete(post?._id)}
+        onCancel={closeConfirmationDialog}
+      />
     </div>
   );
 };

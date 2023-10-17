@@ -23,7 +23,6 @@ function Sidebar() {
     const { loggedUser }: any = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        console.log(token ,`this is typeof window`)
         if (typeof window !== 'undefined') {
           // Check for the token cookie after the component mounts on the client side
         const newToken = Cookies.get('token') ?? null;
@@ -84,14 +83,10 @@ function Sidebar() {
                     )
                 ))}
                 <DarkMode />
-                {/* {token &&
-                <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut} isLoading={true}/>
-                } */}
                 {token ? (
                     <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut} isLoading={true}/>
                 ):(null)
                 }
-                {/* <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut}/>: */}
                 <TweetButton />
             </div>
         </div>

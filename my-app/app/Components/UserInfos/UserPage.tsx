@@ -35,8 +35,9 @@ function UserPage() {
     // const token: string  = Cookies.get('token') || ``;
     const [newToken , setNewToken] = useState(``)
   // Decode the token to get the user ID
-    const decode: { userId: string } | null = newToken ? jwt_decode(newToken) : null;
+    const decode: { userId: string  , role:string} | null = newToken ? jwt_decode(newToken) : null;
     const currentUser = newToken ? decode?.userId || `` : ``;
+    const role = newToken ? decode?.role || `` : ``;
     useEffect(()=>{
     const tokenFromCookies = Cookies.get(`token`)
     if(tokenFromCookies){
@@ -62,7 +63,7 @@ function UserPage() {
     <>
         <Header label={user?.firstName} showBackArrow theme={resolvedTheme}/>
         <UserInfo userId={userId as string} user={user as User} />
-        <UserBio userId={userId as string} theme={resolvedTheme}/>
+        <UserBio userId={userId as string} theme={resolvedTheme} role={role}/>
         <UserPosts userId={userId as string} />
         {/* <PostItem userId={userId as string} /> */}
     </>

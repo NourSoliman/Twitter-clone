@@ -2,7 +2,7 @@
 import PostAvatar from '@/app/Components/HomeContent/PostAvatar'
 import { GetLoggedInUser, GetUserData, GetUserProfileImage } from '@/app/Redux/Login/Action'
 import { RootState } from '@/app/Redux/MainStore/rootReducer'
-import { GetPostSinglePage, getReplyOnPosts, LikeProfilePost, SinglePageLike, SinglePageUnLike, UnLikeProfilePost } from '@/app/Redux/Posts/actions'
+import { DeleteCommentFromPost, GetPostSinglePage, getReplyOnPosts, LikeProfilePost, SinglePageLike, SinglePageUnLike, UnLikeProfilePost } from '@/app/Redux/Posts/actions'
 import { CommentInterface, SinglePost } from '@/app/Redux/Posts/reducers'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { useRouter,  useParams } from 'next/navigation'
@@ -26,10 +26,9 @@ function SinglePage() {
   const singlePost = useSelector((state:RootState) => state.posts.singlePost) as SinglePost
   const  loggedUser : any = useSelector((state: RootState) => state.user.loggedUser);
   const postReplyComments: any = useSelector((state:RootState) => state.posts.postReplyComments)
-  console.log(postReplyComments , `reply comments`)
 
+  const postId = params.postId
   useEffect(()=>{
-    const postId = params.postId
     dispatch(GetPostSinglePage(postId as string) as any)
     dispatch(getReplyOnPosts(postId as string) as any)
     if(token){
@@ -38,14 +37,12 @@ function SinglePage() {
   },[params.postId , currentUser ])
   
   const { user } = useSelector((state: RootState) => state.user) as any;
-  console.log(user , `user[reply.userId]`)
   const userFirstName = user[singlePost.userId]?.firstName || ``;
   const userLastName = user[singlePost.userId]?.lastName || ``;
 
 
   const handleLike = useCallback(
     async (postId: any) => {
-      console.log(`LIKEDDDDDD111`)
       if(token){        
         try {
           await dispatch(SinglePageLike(postId) as any);
@@ -68,7 +65,7 @@ function SinglePage() {
     },
     [dispatch]
   );
-  
+
   return (
     <div>
         <Header label={userFirstName + ` ` + `Post`} showBackArrow/>
@@ -108,7 +105,7 @@ function SinglePage() {
         </div>
       </div>
       {postReplyComments?.map((comment : CommentInterface)=>(
-            <Reply comment={comment} user={user}/>
+            <Reply comment={comment} user={user}  commentId={comment?._id} />
       ))}
             <AddPost placeHolder='Tweet Your Reply' isreply postId={singlePost._id}/>
   </div>

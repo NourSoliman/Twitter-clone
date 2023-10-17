@@ -25,4 +25,6 @@ router.post(`/unlikePost/:postId` , auth , postsController.unLikePost)
 router.post(`/reply/:postId` , auth , postsController.addReplyToPost)
 router.get(`/posts/reply/:postId` , postsController.getReply)
 router.get(`/notifications` , auth , postsController.getNotifications)
+router.delete(`/deletePost/:postId` , auth , postsController.deletePost)
+router.delete(`/deleteReply/:postId/:commentId` , auth , postsController.deleteReply)
 module.exports = router;

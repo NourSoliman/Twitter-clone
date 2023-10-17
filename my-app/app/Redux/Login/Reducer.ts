@@ -282,7 +282,6 @@ const loginReducer = (state = initialState, action: actionTypes) => {
         case UN_FOLLOW_SOMEONE:
             return {
                 ...state,
-                // user:action.payload,
                 loggedUser: {
                     ...state.loggedUser,
                     isFollowing: false,
@@ -290,10 +289,9 @@ const loginReducer = (state = initialState, action: actionTypes) => {
                 isLoading: false
             }
         case LOGIN_FAIL:
-            // const {error} = action.payload
             return {
                 ...state,
-                error: `ERROR-LOGGING`,
+                error: action.payload.error,
                 isLoading: false,
             }
         case REGISTER_FAIL:

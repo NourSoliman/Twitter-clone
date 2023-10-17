@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode'
 import PostItem from './PostItem'
 import {  GetLoggedInUser } from '@/app/Redux/Login/Action'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import PostsLoading from './loading'
 
 interface userPosts {
   posts?:[],
@@ -42,7 +43,7 @@ const UserPosts : React.FC<userPosts> = () => {
     dataLength={posts?.length} 
     next={fetchMorePosts}
     hasMore={true} 
-    loader={<h4>Loading...</h4>} 
+    loader={<PostsLoading />} 
 >
         {posts?.map((post : Record<string , any>)=>(
             <PostItem userId={currentUser} post={post}  key={post._id} page={page} user={user} isLoading={isLoading} />

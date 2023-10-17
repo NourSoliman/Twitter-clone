@@ -10,10 +10,11 @@ import { BiCalendar } from 'react-icons/bi';
 import { OpenEditForm } from '@/app/Redux/dialog/Actions';
 import EditModal from '../Sidebar/EditModal';
 import { followSomeone, GetLoggedInUser, unFollowSomeOne } from '@/app/Redux/Login/Action';
-
+import {MdVerified, MdVerifiedUser} from 'react-icons/md'
 interface UserBioProps {
     userId: string,
     theme?: string,
+    role?:string,
 
 }
 interface User {
@@ -25,8 +26,9 @@ interface User {
     bio: string,
     _id: string,
 }
-const UserBio: React.FC<UserBioProps> = ({ userId, theme }) => {
+const UserBio: React.FC<UserBioProps> = ({ userId, theme , role }) => {
     const dispatch = useDispatch()
+    console.log(role ,`role from userBio`)
     const { user }: any = useSelector((state: RootState) => state.user);
     const { loggedUser }: any = useSelector((state: RootState) => state.user);
     // Retrieve the token from the cookie
@@ -80,7 +82,10 @@ const UserBio: React.FC<UserBioProps> = ({ userId, theme }) => {
             <div className='mt-8 px-4'>
                 <div className='flex flex-col left-4 text-left'>
                     <h2 className='text-black dark:text-white text-2xl text-semibold'>
-                        {user?.firstName}
+                        <div className='flex gap-2'>
+                        {user?.firstName} {role ===`owner` ? <MdVerified color='#FFD700' size={30}/> : ``}
+                        </div>
+                            
                     </h2>
                     <p className='text-neutral-400 text-sm'>@{user?.lastName}</p>
                 </div>

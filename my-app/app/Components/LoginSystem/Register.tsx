@@ -18,8 +18,6 @@ const Register = () => {
     const {isRegisterFormOpen} = useSelector((state : RootState)=>state.dialog)
     const {error , isLoading , message} = useSelector((state : RootState)=>state.user)
     const dispatch = useDispatch()
-    console.log(error , `erro from register`)
-    console.log(message , `erro from register`)
     const handleSignInLink = () => {
     dispatch(openDialog())
     dispatch(CloseRegisterForm())
