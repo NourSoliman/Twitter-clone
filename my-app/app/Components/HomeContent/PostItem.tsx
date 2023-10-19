@@ -87,14 +87,14 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       <PostsLoading />
     )
   }
-  function splitTextIntoLines(text : string, lineLength = 25) {
+  function splitTextIntoLines(text : string, lineLength = 60) {
     const lines = [];
     for (let i = 0; i < text.length; i += lineLength) {
       lines.push(text.slice(i, i + lineLength));
     }
     return lines;
   }
-  const postBody = showFullText ? post?.body : post?.body.slice(0, 50);
+  const postBody = showFullText ? post?.body : post?.body.slice(0, 120);
   const handleConfirmDelete =  (postId : string) => {
     dispatch(DeletePost(postId) as any)
           closeConfirmationDialog()
@@ -131,7 +131,7 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
           <p className="text-neutral-400 text-sm">{handlecreateAt}</p>
           </div>
         </div>
-        <div className="text-sm/[15px] lg:text-lg whitespace-nowrap overflow-hidden overflow-ellipsis max-w-full"
+        <div className="text-[10px] lg:text-lg whitespace-nowrap overflow-hidden overflow-ellipsis max-w-full leading-normal"
         
         >
         {splitTextIntoLines(postBody).map((line, index) => (

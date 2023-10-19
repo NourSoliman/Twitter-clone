@@ -85,7 +85,7 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
     openConfirmationDialog(postId);
   };
   //split post on lines
-  function splitTextIntoLines(text : string, lineLength = 50) {
+  function splitTextIntoLines(text : string, lineLength = 40) {
     const lines = [];
     for (let i = 0; i < text.length; i += lineLength) {
       lines.push(text.slice(i, i + lineLength));

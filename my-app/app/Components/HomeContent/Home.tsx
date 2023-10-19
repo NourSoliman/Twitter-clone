@@ -33,7 +33,6 @@ const UserPosts : React.FC<userPosts> = () => {
     },[dispatch , page ])
 
     const fetchMorePosts = () => {
-      console.log(`worked`)
       setPage(page + 1);
     };
 

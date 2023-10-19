@@ -53,7 +53,6 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
   }, [dispatch, userId, postContent]);
 
   const onReply = useCallback(async () => {
-    console.log(`this reply`)
     try {
       if(postId) {
         await dispatch(replyOnPost(postId , postContent) as any)

@@ -28,7 +28,6 @@ interface User {
 }
 const UserBio: React.FC<UserBioProps> = ({ userId, theme , role }) => {
     const dispatch = useDispatch()
-    console.log(role ,`role from userBio`)
     const { user }: any = useSelector((state: RootState) => state.user);
     const { loggedUser }: any = useSelector((state: RootState) => state.user);
     // Retrieve the token from the cookie
@@ -36,7 +35,6 @@ const UserBio: React.FC<UserBioProps> = ({ userId, theme , role }) => {
     // Decode the token to get the user ID (assuming the token contains a userId field)
     const decode: { userId: string, followingIds: [], } | null = token ? jwt_decode(token) : null;
     const currentUser = token ? decode?.userId || `` : ``;
-    console.log(user , `user from bio`)
     const isEditFormOpen = useSelector((state: RootState) => state.dialog.isEditFormOpen)
     const handleOnEditClick = () => {
         dispatch(OpenEditForm())

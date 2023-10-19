@@ -386,9 +386,7 @@ const PostsReducer = (state = initialState, action: ActionTypes) => {
             }
         case DELETE_POST:
             const { postId } = action.payload
-            console.log(postId)
             const updatedPosts = state.posts.filter((post) => post._id !== postId)
-            console.log(updatedPosts)
             return {
                 ...state,
                 posts: updatedPosts,

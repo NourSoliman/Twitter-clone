@@ -12,7 +12,7 @@ import {
 } from './types'
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
-// const serverUrl = "http://localhost:1997/api"
+// const serverUrl = "http://localhost:1998/api"
 const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
 const getBearerToken = () => {
     const token = Cookies.get(`token`)
@@ -33,7 +33,6 @@ export const addPost = (userId: string, postContent: string) => {
             })
             if (response.ok) {
                 const data = await response.json()
-                console.log(data, `data from posts action`)
                 dispatch({
                     type: ADD_POST_SUCCESS,
                     payload: data

@@ -36,7 +36,6 @@ function Sidebar() {
 
     const userId = decodedToken? decodedToken.userId : null;
     const handleSignOut = () =>{
-        console.log(`logged out`);
         
         dispatch(LogoutAction() as any)
         Cookies.remove('token');

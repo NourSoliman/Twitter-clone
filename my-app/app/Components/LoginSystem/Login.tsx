@@ -22,7 +22,6 @@ function Login() {
 
     //login function
     const handleSubmit = async () => {
-        console.log(`clicked`)
         const userData = {
             email: email,
             password: password,
