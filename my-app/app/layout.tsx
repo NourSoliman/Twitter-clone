@@ -35,8 +35,8 @@ export default function RootLayout({
           <ThemeProviderNext>
             <SkeletonProvider>
               <div className='robotoText'>
-                <div className='container h-full mx-auto xl:px-30 max-w-6xl'>
-                  <div className='grid grid-cols-4 h-full'>
+                <div className='container pl-0 pr-0 lg:pl-2 lg:pr-2 h-full mx-auto xl:px-30 max-w-6xl'>
+                  <div className='grid grid-cols-3 lg:grid-cols-4 h-full'>
                     <Sidebar />
                     <div className='col-span-3 lg:col-span-2 border-x-[1px] border-neutral-200 dark:border-neutral-800'>
                       <ToastProdiver />

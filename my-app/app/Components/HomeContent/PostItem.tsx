@@ -87,14 +87,14 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       <PostsLoading />
     )
   }
-  function splitTextIntoLines(text : string, lineLength = 50) {
+  function splitTextIntoLines(text : string, lineLength = 25) {
     const lines = [];
     for (let i = 0; i < text.length; i += lineLength) {
       lines.push(text.slice(i, i + lineLength));
     }
     return lines;
   }
-  const postBody = showFullText ? post?.body : post?.body.slice(0, 100);
+  const postBody = showFullText ? post?.body : post?.body.slice(0, 50);
   const handleConfirmDelete =  (postId : string) => {
     dispatch(DeletePost(postId) as any)
           closeConfirmationDialog()
@@ -114,7 +114,11 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       openConfirmationDialog(postId);
     };
   return (
-    <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800 ">
+    <div
+     className="text-black dark:text-white flex flex-row items-start
+      gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800
+      
+      ">
       <PostAvatar userId={post?.userId} />
       <div className="flex flex-col">
         <div
@@ -127,17 +131,19 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
           <p className="text-neutral-400 text-sm">{handlecreateAt}</p>
           </div>
         </div>
-        <div>
+        <div className="text-sm/[15px] lg:text-lg whitespace-nowrap overflow-hidden overflow-ellipsis max-w-full"
+        
+        >
         {splitTextIntoLines(postBody).map((line, index) => (
           <p
             key={index}
             className="text-black dark:text-white"
-            style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
+            
           >
             {line}
           </p>
         ))}
-        {post?.body.length > 100 && (
+        {post?.body.length > 50 && (
           <button
             className="text-blue-500 hover:underline block ml-2"
             onClick={toggleShowText}
@@ -169,7 +175,7 @@ const PostItem: React.FC<PostsProps> = ({ userId, post, page, user, isLoading })
       </div>
       <div className="flex items-end justify-end ml-auto">
       {post?.userId === currentUser && 
-          <button className="hover:opacity-20 text-red-400 dark:text-red-700" onClick={()=> handleDelete(post?._id)}><AiFillDelete  size={30}/></button>
+          <button className="hover:opacity-20 text-red-400 dark:text-red-700" onClick={()=> handleDelete(post?._id)}><AiFillDelete  size={20}/></button>
           }
       </div>
       <ConfirmationDialog

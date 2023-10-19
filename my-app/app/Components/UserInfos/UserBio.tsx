@@ -36,7 +36,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId, theme , role }) => {
     // Decode the token to get the user ID (assuming the token contains a userId field)
     const decode: { userId: string, followingIds: [], } | null = token ? jwt_decode(token) : null;
     const currentUser = token ? decode?.userId || `` : ``;
-
+    console.log(user , `user from bio`)
     const isEditFormOpen = useSelector((state: RootState) => state.dialog.isEditFormOpen)
     const handleOnEditClick = () => {
         dispatch(OpenEditForm())
@@ -83,7 +83,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId, theme , role }) => {
                 <div className='flex flex-col left-4 text-left'>
                     <h2 className='text-black dark:text-white text-2xl text-semibold'>
                         <div className='flex gap-2'>
-                        {user?.firstName} {role ===`owner` ? <MdVerified color='#FFD700' size={30}/> : ``}
+                        {user?.firstName} {user?.firstName ===`NourSoliman` ? <MdVerified color='#FFD700' size={30} title="owner"/> : ``}
                         </div>
                             
                     </h2>

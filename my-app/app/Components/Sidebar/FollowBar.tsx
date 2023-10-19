@@ -6,6 +6,7 @@
   import Button from '../Buttons/Button'
   import Avatar from './Avatar'
   import Loading from './loading'
+import { MdVerified } from 'react-icons/md'
   function FollowBar() {
     const dispatch = useDispatch()
     const {users} = useSelector((state:RootState)=> state.user)
@@ -40,8 +41,8 @@
                 <div key={user._id} className='flex flex-row gap-4'>
                   <Avatar userId={user._id} isLarge={false} imageType='profile' user={user}/>
                   <div className='flex flex-col'>
-                  <p className='text-black dark:text-white'>
-                    {user.firstName}
+                  <p className='text-black dark:text-white flex gap-2 items-center'>
+                    {user.firstName} {user?.firstName ===`NourSoliman` ? <MdVerified color='#FFD700' size={15} title="owner"/> : ``}
                   </p>
                   <p className='text-neutral-400 text-sm'>
                     @{user.lastName}

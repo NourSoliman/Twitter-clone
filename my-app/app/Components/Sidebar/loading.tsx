@@ -11,7 +11,7 @@ interface loadingProps {
 const Loading: React.FC<loadingProps> = ({ isLoading }) => {
 
     return (
-        <div>
+        <div className='hidden lg:block'>
             {isLoading &&
                 <div className="flex justify-center items-center space-x-4 flex-col mt-10 ">
                     <div className='flex items-center  flex-wrap mb-5'>

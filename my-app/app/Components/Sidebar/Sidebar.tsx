@@ -71,9 +71,10 @@ function Sidebar() {
         )
     }
   return (
-    <div className='col-span-1 h-full pr-4 md:pr-6' >
-        <div className='flex flex-col items-end'>
-            <div className="space-y-2 lg:w-[230px]">
+    <div>
+    <div className='hidden lg:block lg:col-span-1 lg:h-full pr-4 md:pr-6' >
+        <div className='lg:flex lg:flex-col  lg:items-end'>
+            <div className="lg:space-y-2 lg:w-[230px]">
                 <SideBarLogo />
                 {items.map((item)=>(
                     (item.href === '/' || token) ? (
@@ -90,6 +91,24 @@ function Sidebar() {
                 <TweetButton />
             </div>
         </div>
+    </div>
+    <div className="lg:hidden fixed bottom-0 left-0 z-50  w-full  bg-white dark:bg-slate-900">
+        <div className='flex flex-row  items-end justify-between '>
+          {items.map((item) => (
+            (item.href === '/' || token) ? (
+              <SidebarItems key={item.href} label={item.label} href={item.href} icon={item.icon} alert={item.alert} />
+            ) : (
+              <SidebarItems key={item.href} label={item.label} icon={item.icon} onClick={handleShowLogIn} alert={item.alert} />
+            )
+          ))}
+          <DarkMode />
+          {token ? (
+            <SidebarItems icon={BiLogOut} label="Logout" onClick={handleSignOut} isLoading={true} />
+          ) : (null)
+          }
+        </div>
+      </div>
+
     </div>
   )
 }

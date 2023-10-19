@@ -15,6 +15,7 @@ import PostItem from '@/app/Components/HomeContent/PostItem'
 import Cookies from 'js-cookie'
 import jwt_decode from 'jwt-decode'
 import { useTheme } from 'next-themes'
+import LoadingIndicator from '../LoginSystem/loading'
 interface User {
     firstName: string;
     lastName: string;
@@ -54,8 +55,8 @@ function UserPage() {
     },[dispatch , userId , currentUser ]) 
     if(isLoading || !newToken) {
         return(
-            <div className='flex justify-center items-center h-full'>
-                <RingLoader color='#1948ef' size={70}/>
+            <div>
+                <LoadingIndicator />
             </div>
         )
     }

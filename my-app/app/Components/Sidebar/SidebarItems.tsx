@@ -29,7 +29,7 @@ const  SidebarItems: React.FC<SidebarItemsProps> = ({label , href , icon : Icon 
         items-center justify-center p-4 hover:bg-slate-500
         hover:bg-opacity-10  cursor-pointer lg:hidden
         '>
-        <Icon size={28} color={"white"} />
+        <Icon size={28} color={resolvedTheme === `dark` ? `white` : `#020817`}/>
         {alert? <BsDot  className='text-sky-500 absolute -top-4 left-0 ' size={70}/> : null}
         </div>
         <div className='relative

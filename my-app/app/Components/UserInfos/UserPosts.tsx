@@ -96,12 +96,12 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
     setShowFullText((prevShowFullText) => !prevShowFullText);
   };
   return (
-    <div>
+    <div className="mb-12 lg:mb-0">
       {userPosts?.map((post: any) => (
         <div className="text-black dark:text-white flex flex-row items-start gap-3 border-b-[1px] p-4 border-neutral-200 dark:border-neutral-800" key={post?._id}>
           <PostAvatar userId={post?.userId} />
           <div className="flex flex-col">
-            <div className="flex flex-row items-center gap-2 cursor-pointer">
+            <div className="flex flex-row items-center gap-2 cursor-pointer text-sm/[14px]">
               <p>{userFirstName}</p>
               <p className="text-neutral-400">@{userLastName}</p>
               <p className="text-neutral-400 text-sm">
@@ -135,7 +135,7 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
                 <p>{post?.comments?.length || 0}</p>
               </div>
               <div
-                className="flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500"
+                className="text-sm/[15px] flex flex-row text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500"
 
               >
                 {post?.likedIds?.includes(currentUser) ? (
@@ -151,7 +151,7 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
           </div>
           <div className="flex items-end justify-end ml-auto">
             {post?.userId === currentUser &&
-            <button className="hover:opacity-20 text-red-400 dark:text-red-700" onClick={() => handleDelete(post?._id)}><AiFillDelete size={30} /></button>
+            <button className="hover:opacity-20 text-red-400 dark:text-red-700" onClick={() => handleDelete(post?._id)}><AiFillDelete size={20} /></button>
             }
           </div>
           <ConfirmationDialog

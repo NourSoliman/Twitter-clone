@@ -22,15 +22,15 @@ const DarkMode = () => {
     onClick={()=>setTheme(resolvedTheme === `dark` ? `light` : `dark`)}
     >
     {resolvedTheme === `dark` ? (
-      <div className='flex gap-4 ml-12'>
+      <div className='flex gap-4 lg:ml-12 ml-0 mb-3'>
     <BsFillSunFill color="orange" size={30}/>
-    <p>Light </p>
+    <p className='hidden lg:block'>Light </p>
       </div>
     
     ):(
-      <div className='flex gap-4 ml-12'>
+      <div className='flex gap-4 lg:ml-12 ml-0 mb-3 lg:mb-0'>
         <BsMoonFill color="black" size={30}/>
-        <p>Dark </p>
+        <p className='hidden lg:block'>Dark </p>
       </div>
     )}
     </button>

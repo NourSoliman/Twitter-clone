@@ -56,7 +56,6 @@ const  PostAvatar : React.FC<UserAvatar> = ({profileIamge , userId , border , is
     alt="avatar"
     onClick={onClick}   
     src={profileImage || pegasus}
-    // src={ProfileImage|| pegasus}
     />
 
     </div>
