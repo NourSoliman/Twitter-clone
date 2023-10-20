@@ -15,7 +15,8 @@ import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/navigation'
 import Loading from './loading'
 import DarkMode from './DarkMode'
-function Sidebar() {
+
+const  Sidebar = () => {
     const dispatch = useDispatch()
     const [isLoading , setIsLoading] = useState(true)
     const [token, setToken] = useState<string | null>(null);
@@ -87,7 +88,7 @@ function Sidebar() {
                     <SidebarItems icon={BiLogOut} label={"Logout"} onClick={handleSignOut} isLoading={true}/>
                 ):(null)
                 }
-                <TweetButton />
+                <TweetButton userId={userId}/>
             </div>
         </div>
     </div>

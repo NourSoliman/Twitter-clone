@@ -1,5 +1,5 @@
 import { OPEN_LOGIN_FORM , CLOSE_LOGIN_FORM , OPEN_REGISTER_FORM , CLOSE_REGISTER_FORM, 
-OPEN_EDIT_FORM , CLOSE_EDIT_FORM
+OPEN_EDIT_FORM , CLOSE_EDIT_FORM , OPEN_TWEET_FORM , CLOSE_TWEET_FORM
 } from "./Types";
 
 interface OpenLoginForm {
@@ -26,16 +26,27 @@ interface CloseRegisterForm{
     type:typeof CLOSE_REGISTER_FORM;
     isRegisterFormOpen:boolean,
 }
-type DialogActionTypes = OpenLoginForm | CloseLoginForm |OpenRegisterForm |CloseRegisterForm | CloseEditForm | OpenEditForm
+interface OpenTweet{
+    type:typeof OPEN_TWEET_FORM;
+    isTweetFormOpen:boolean,
+}
+interface CloseTweet{
+    type:typeof CLOSE_TWEET_FORM;
+    isTweetFormOpen:boolean,
+}
+type DialogActionTypes = OpenLoginForm | CloseLoginForm |OpenRegisterForm |CloseRegisterForm | CloseEditForm |
+ OpenEditForm | OpenTweet | CloseTweet
 interface myInterFace{
     isLoginFormOpen:boolean,
     isRegisterFormOpen:boolean,
     isEditFormOpen:boolean,
+    isTweetFormOpen:boolean,
 }
 const intialState : myInterFace = {
     isLoginFormOpen:false,
     isRegisterFormOpen:false,
     isEditFormOpen:false,
+    isTweetFormOpen:false,
 }
 const dialogReducer = (state = intialState , action : DialogActionTypes ) =>{
     switch(action.type){
@@ -68,6 +79,16 @@ const dialogReducer = (state = intialState , action : DialogActionTypes ) =>{
         return{
             ...state,
             isRegisterFormOpen : action.isRegisterFormOpen
+        }
+    case OPEN_TWEET_FORM:
+        return{
+            ...state,
+            isTweetFormOpen:action.isTweetFormOpen
+        }
+    case CLOSE_TWEET_FORM:
+        return{
+            ...state,
+            isTweetFormOpen:action.isTweetFormOpen
         }
     default:
         return state;

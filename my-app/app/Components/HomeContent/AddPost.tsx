@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState , useRef } from "react";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { addPost, GetAllPosts,  replyOnPost } from "@/app/Redux/Posts/actions";
@@ -10,6 +10,7 @@ import Avatar from "../Sidebar/Avatar";
 import { RootState } from "@/app/Redux/MainStore/rootReducer";
 
 import Skeleton from "react-loading-skeleton"; 
+import EmojiPicker from "emoji-picker-react";
 
 interface addPostProps{
   placeHolder:string,
@@ -19,7 +20,11 @@ interface addPostProps{
 }
 const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
   const dispatch = useDispatch();
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [showEmojiPicker , setShowEmojiPicker] = useState(false)
   const [postContent, setPostContent] = useState(``);
+  const [cursorPosition, setCursorPosition] = useState(0);
   const [userId, setUserId] = useState(``);
   const [page, setPage] = useState(1);
   const [loading , setLoading] = useState(true)
@@ -29,7 +34,6 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
 
   useEffect(() => {
     const clientToken = Cookies.get("token") || null;
-
     if (clientToken) {
       // Decode the token to access its payload
       const decodedToken: { userId: string } | undefined = jwt_decode(clientToken);
@@ -84,6 +88,14 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
 </div>
     )
   }
+  //Add Emojis
+  const handleEmojiSelect = (emoji : any) => {
+    // Append the selected emoji at the end of the text
+    setPostContent((prevContent) => prevContent + emoji.emoji);
+  };
+  
+
+  
   return (
     <div className="border-b-[1px] border-neutral-200 dark:border-neutral-800 px-5 py-2">
       {userId ? (
@@ -96,17 +108,31 @@ const AddPost: React.FC<addPostProps> = ({placeHolder , isreply , postId }) => {
           <div className="w-full">
             <textarea
               disabled={isLoading}
+              ref={textAreaRef}
               onChange={(e) => setPostContent(e.target.value)}
               value={postContent}
               placeholder={placeHolder}
               className="w-full  bg-white dark:bg-transparent mt-3 ml-3 resize-none text-black dark:text-white outline-none"
             />
+            <div className="flex justify-between">
             <div className="flex justify-end ">
               <Button
                 onClick={isreply ? onReply : onSubmit}
                 label="Tweet"
                 disabled={isLoading || !postContent}
               />
+            </div>
+            <div className="flex justify-start relative">
+            <button
+            
+            onClick={()=>setShowEmojiPicker(!showEmojiPicker)}
+            >
+              😃
+            </button>
+            <span className="absolute top-10 right-5">
+            {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiSelect} autoFocusSearch={false} />}
+            </span>
+            </div>
             </div>
           </div>
         </div>
