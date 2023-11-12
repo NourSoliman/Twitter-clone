@@ -50,7 +50,7 @@ import { MdVerified } from 'react-icons/md'
                   </div>
                 </div>
               ))}
-              {users.length >= 10 &&  
+              {users.length >= 5 &&  
               <Button label='Another users'  onClick={handleLoadMore}/>
               }
           </div>
