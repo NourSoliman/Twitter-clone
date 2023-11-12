@@ -13,7 +13,9 @@ import {
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
 // const serverUrl = "http://localhost:1998/api"
-const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
+// const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
+    //vercel
+    const serverUrl="https://twitter-server-lilac.vercel.app/api"
 const getBearerToken = () => {
     const token = Cookies.get(`token`)
     return token
