@@ -12,10 +12,10 @@ import {
 } from './types'
 import { Dispatch } from 'redux'
 import Cookies from "js-cookie";
-// const serverUrl = "http://localhost:1998/api"
+const serverUrl = "http://localhost:1998/api"
 // const serverUrl = "https://twitter-clone-h1eq.onrender.com/api"
     //vercel
-    const serverUrl="https://twitter-server-lilac.vercel.app/api"
+    // const serverUrl="https://twitter-server-lilac.vercel.app/api"
 const getBearerToken = () => {
     const token = Cookies.get(`token`)
     return token
@@ -24,7 +24,7 @@ export const addPost = (userId: string, postContent: string) => {
     return async (dispatch: Dispatch) => {
         try {
             const token = getBearerToken()
-            dispatch({ type: ADD_POST_FIRST })
+            // dispatch({ type: ADD_POST_FIRST })
             const response = await fetch(`${serverUrl}/post/${userId}`, {
                 method: `POST`,
                 headers: {

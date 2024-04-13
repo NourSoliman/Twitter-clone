@@ -16,8 +16,14 @@ import { AiFillDelete, AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "rea
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/navigation";
 import ConfirmationDialog from '../Modals/ConfirmationMessage'
+import type {
+  InferGetStaticPropsType,
+  GetStaticProps,
+  GetStaticPaths,
+} from 'next'
 interface userPostsProps {
   userId: string;
+
 }
 const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
   const dispatch = useDispatch();
@@ -26,11 +32,9 @@ const UserPosts: React.FC<userPostsProps> = ({ userId }) => {
   const [postIdToDelete, setPostIdToDelete] = useState(``);
   const [page, setPage] = useState(1);
   const [showFullText, setShowFullText] = useState(false);
-
   const token: any = Cookies.get(`token`) || null;
   const decode: { userId: string } = jwt_decode(token) || null;
   const currentUser = decode?.userId;
-  // const { posts } = useSelector((state: RootState) => state.posts);
   const userPosts = useSelector((state: RootState) => state.posts.userPosts) as []
   useEffect(() => {
 

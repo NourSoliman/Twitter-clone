@@ -28,16 +28,27 @@ async function post(req: Request, res: Response) {
 async function getAllPosts(req: Request, res: Response) {
   try {
     const page = parseInt(req.params.page);
+    console.log(page, `pagegegge`);
+
     const perPage = 10;
     const skip = (page - 1) * perPage;
+
+    // Query to get the total count of all posts
+    const totalCount = await Posts.countDocuments();
+    console.log(totalCount, `totalCount`);
+
+    // Adjust perPage based on the number of available posts
+    const adjustedPerPage = Math.min(perPage, totalCount);
+
     const posts = await Posts.find()
       .sort({ createdAt: -1 }) // Sort by creation date in descending order
       .skip(skip)
-      .limit(perPage);
+      .limit(adjustedPerPage);
+
     res.status(200).json({ posts });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: `Etenral server Error` });
+    res.status(500).json({ error: `Internal server error` });
   }
 }
 async function getUserPosts(req: Request, res: Response) {
